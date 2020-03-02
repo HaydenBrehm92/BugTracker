@@ -1,41 +1,151 @@
 ﻿@model BugTracker.Models.RegisterViewModel
 @{
+    Layout = null;
     ViewBag.Title = "Register";
 }
 
-<h2>@ViewBag.Title.</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
-        </div>
-    </div>
-}
+    <!-- Bootstrap CSS -->
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    <style>
+        .card {
+            border-width: 2px !important;
+            border-style: solid !important;
+            border-color: #dc3545;
+            max-width: 75vw;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: auto;
+            background-color: #F5F5F5;
+        }
+
+        .img-responsive {
+            display: inline-block;
+            max-width: 267px;
+            max-height: 101px;
+        }
+
+            .img-responsive img {
+                max-width: 100%;
+                height: auto;
+            }
+    </style>
+</head>
+<body>
+    
+    <div id="body">
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="container d-flex vh-100 justify-content-center align-self-center">
+                <div class="row h-100 ">
+                    <div class="col-md-12">
+                        <div class="row justify-content-center align-self-center">
+                            <img class="img-responsive pb-3 col-12 " src="~/Content/Logo2.png" alt="" />
+                        </div>
+                        <div class="card rounded  shadow bg-white mx-auto">
+                            <h3 class="card-header bg-danger pb-2 m-0 text-white text-center col-12">Register</h3>
+                            <div class="card-body">
+                                @if (!Html.ViewData.ModelState.IsValid)
+                                {
+                                    <div class="col-12 alert alert-danger" id="RegisterAlert">
+                                        <a id="linkClose" href="#" class="close">&times; </a>
+                                        <small>@Html.ValidationSummary(false)</small>
+                                    </div>
+                                }
+                                <div class="form-group">
+                                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @id = "EmailRegister", @placeholder = "Email" })
+
+                                    <small>@Html.ValidationMessageFor(model => model.Email, null, new { @class = "text-danger " })</small>
+                                </div>
+                                <div class="form-group ">
+                                    @Html.PasswordFor(model => model.Password, new { @class = "form-control", @id = "PasswordRegister", @placeholder = "Password" })
+                                    <small>@Html.ValidationMessageFor(model => model.Password, null, new { @class = "text-danger " })</small>
+                                </div>
+                                <div class="form-group">
+                                    @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control", @id = "ConfirmPassword", @placeholder = "Confirm Password" })
+                                    <small>@Html.ValidationMessageFor(model => model.ConfirmPassword, null, new { @class = "text-danger " })</small>
+                                </div>
+                                <div class="form-group pt-3">
+                                    <button type="submit" id="btnRegister" class="btn btn-primary btn-block bg-danger border-danger">Register</button>
+                                </div>
+                                <div class="text-center">
+                                    <small>
+                                        Already have an account?
+                                        @Html.ActionLink("Log In", "Login", "Account")
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    @Scripts.Render("~/bundles/jquery")
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script>
+        $('#linkClose').click(function () {
+            $('#RegisterAlert').hide('fade');
+        });
+    </script>
+    @*<h2>@ViewBag.Title.</h2>
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h4>Create a new account.</h4>
+            <hr />
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-default" value="Register" />
+                </div>
+            </div>
+        }
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }*@
+</body>
+</html>

@@ -55,7 +55,7 @@ namespace BugTracker
             {
                 RequiredLength = 6,
                 RequireNonLetterOrDigit = true,
-                RequireDigit = true,
+                RequireDigit = false,
                 RequireLowercase = true,
                 RequireUppercase = true,
             };

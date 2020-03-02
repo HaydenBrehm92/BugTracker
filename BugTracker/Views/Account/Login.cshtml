@@ -1,62 +1,203 @@
 ﻿@using BugTracker.Models
 @model LoginViewModel
 @{
+    Layout = null;
     ViewBag.Title = "Log in";
 }
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
-    <div class="col-md-8">
-        <section id="loginForm">
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <h4>Use a local account to log in.</h4>
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <div class="checkbox">
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                            @Html.LabelFor(m => m.RememberMe)
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        .card {
+            border-width: 2px !important;
+            border-style: solid !important;
+            border-color: #dc3545;
+            max-width: 75vw;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: auto;
+            background-color: #F5F5F5;
+        }
+
+        .img-responsive {
+            display: inline-block;
+            max-width: 267px;
+            max-height: 101px;
+        }
+
+            .img-responsive img {
+                max-width: 100%;
+                height: auto;
+            }
+    </style>
+
+</head>
+<body>
+    <div id="body">
+        <form>
+            <div class="container d-flex vh-100 justify-content-center align-self-center">
+                <div class="row h-100 ">
+                    <div class="col-md-12">
+                        <div class="row justify-content-center align-self-center">
+                            <img class="img-responsive pb-3 col-12 " src="~/Content/Logo2.png" alt="" />
+                        </div>
+                        <div class="card rounded min-vw-25 min-vh-50 shadow bg-white mx-auto">
+                            <h3 class="card-header bg-danger pb-2 m-0 text-white text-center w-100">Sign In</h3>
+                            <div class="card-body">
+                                <div id="LoginAlert" class="alert alert-danger collapse col-sm-12">
+                                    <a id="linkClose" href="#" class="close">&times;</a>
+                                    <strong>Email or Password is incorrect</strong>
+                                </div>
+                                <div class="form-group ">
+                                    <input type="email" class="form-control col-sm-12" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+                                </div>
+                                <div class="form-group ">
+                                    <input type="password" class="form-control col-sm-12" id="exampleInputPassword1" placeholder="Password">
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                    <label class="form-check-label" for="exampleCheck1"><small>Remember Password?</small></label>
+                                </div>
+                                <div class="form-group pt-3">
+                                    <button type="button" id="btnLogin" class="btn btn-primary btn-block bg-danger border-danger">Login</button>
+                                </div>
+                                <div class="text-center">
+                                    <small>
+                                        Don't have an account?
+                                        @Html.ActionLink("Register", "Register")
+                                    </small>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Log in" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btnLogin').click(function () {
+                $.ajax({
+                    url: 'http://localhost:52019/token',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: {
+                        username: $('#exampleInputEmail1').val(),
+                        password: $('#exampleInputPassword1').val(),
+                        grant_type: 'password'
+                    },
+                    success: function (response) {
+                        sessionStorage.setItem('accessToken', response.access_token);
+                        $.ajax({
+                            url: 'http://localhost:52019/Home/Index',
+                            method: 'GET',
+                            headers: {
+                                'Authorization': 'Bearer' + sessionStorage.getItem('accessToken')
+                            },
+                            success: function () {
+                            window.location.href = "http://localhost:52019/Home/Index";
+                            },
+                            error: function (response) {
+                                alert(response.statusText);
+                            }
+                        })
+
+                    },
+                    error: function (failure) {
+                        $('#LoginAlert').show('fade');
+
+                    }
+                });
+            });
+
+            $('#linkClose').click(function () {
+                $('#LoginAlert').hide('fade');
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+@*<h2>@ViewBag.Title.</h2>
+    <div class="row">
+        <div class="col-md-8">
+            <section id="loginForm">
+                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <h4>Use a local account to log in.</h4>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                </div>
-                <p>
-                    @Html.ActionLink("Register as a new user", "Register")
-                </p>
-                @* Enable this once you have account confirmation enabled for password reset functionality
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <div class="checkbox">
+                                @Html.CheckBoxFor(m => m.RememberMe)
+                                @Html.LabelFor(m => m.RememberMe)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Log in" class="btn btn-default" />
+                        </div>
+                    </div>
                     <p>
-                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                    </p>*@
-            }
-        </section>
-    </div>
-    <div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-        </section>
-    </div>
-</div>
+                        @Html.ActionLink("Register as a new user", "Register")
+                    </p>
+                     Enable this once you have account confirmation enabled for password reset functionality
+                        <p>
+                            @Html.ActionLink("Forgot your password?", "ForgotPassword")
+                        </p>
+                }
+            </section>
+        </div>
+        <div class="col-md-4">
+            <section id="socialLoginForm">
+                @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+            </section>
+        </div>
+    </div>*@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
