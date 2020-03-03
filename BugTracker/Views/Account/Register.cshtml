@@ -21,7 +21,6 @@
             border-width: 2px !important;
             border-style: solid !important;
             border-color: #dc3545;
-            max-width: 75vw;
         }
 
         html {
@@ -49,49 +48,49 @@
     </style>
 </head>
 <body>
-    
+    @*messing around*@
     <div id="body">
         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
             @Html.AntiForgeryToken()
-            <div class="container d-flex vh-100 justify-content-center align-self-center">
-                <div class="row h-100 ">
-                    <div class="col-md-12">
-                        <div class="row justify-content-center align-self-center">
-                            <img class="img-responsive pb-3 col-12 " src="~/Content/Logo2.png" alt="" />
-                        </div>
-                        <div class="card rounded  shadow bg-white mx-auto">
-                            <h3 class="card-header bg-danger pb-2 m-0 text-white text-center col-12">Register</h3>
-                            <div class="card-body">
-                                @if (!Html.ViewData.ModelState.IsValid)
-                                {
-                                    <div class="col-12 alert alert-danger" id="RegisterAlert">
+            <div class="container d-flex h-100 justify-content-center align-self-center">
+                <div class="col-lg-12">
+                    <div class="text-center">
+                        <img class="img-responsive pb-3 " src="~/Content/Logo2.png" alt="" />
+                    </div>
+                    <div class="card rounded w-50 shadow bg-white mx-auto">
+                        <h3 class="card-header bg-danger pb-2 m-0 text-white text-center">Register</h3>
+                        <div class="card-body row">
+                            @if (!Html.ViewData.ModelState.IsValid)
+                            {
+                                <div class="col-12">
+                                    <div class="alert alert-danger" id="RegisterAlert">
                                         <a id="linkClose" href="#" class="close">&times; </a>
-                                        <small>@Html.ValidationSummary(false)</small>
+                                        @Html.ValidationSummary(false)
                                     </div>
-                                }
-                                <div class="form-group">
-                                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @id = "EmailRegister", @placeholder = "Email" })
+                                </div>
+                            }
+                            <div class="form-group col-12">
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control col-12", @id = "EmailRegister", @placeholder = "Email" })
 
-                                    <small>@Html.ValidationMessageFor(model => model.Email, null, new { @class = "text-danger " })</small>
-                                </div>
-                                <div class="form-group ">
-                                    @Html.PasswordFor(model => model.Password, new { @class = "form-control", @id = "PasswordRegister", @placeholder = "Password" })
-                                    <small>@Html.ValidationMessageFor(model => model.Password, null, new { @class = "text-danger " })</small>
-                                </div>
-                                <div class="form-group">
-                                    @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control", @id = "ConfirmPassword", @placeholder = "Confirm Password" })
-                                    <small>@Html.ValidationMessageFor(model => model.ConfirmPassword, null, new { @class = "text-danger " })</small>
-                                </div>
-                                <div class="form-group pt-3">
-                                    <button type="submit" id="btnRegister" class="btn btn-primary btn-block bg-danger border-danger">Register</button>
-                                </div>
-                                <div class="text-center">
-                                    <small>
-                                        Already have an account?
-                                        @Html.ActionLink("Log In", "Login", "Account")
-                                    </small>
-                                </div>
+                                <small>@Html.ValidationMessageFor(model => model.Email, null, new { @class = "text-danger " })</small>
+                            </div>
+                            <div class="form-group col-12">
+                                @Html.PasswordFor(model => model.Password, new { @class = "form-control col-12", @id = "PasswordRegister", @placeholder = "Password" })
+                                <small>@Html.ValidationMessageFor(model => model.Password, null, new { @class = "text-danger " })</small>
+                            </div>
+                            <div class="form-group col-12">
+                                @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control col-12", @id = "ConfirmPassword", @placeholder = "Confirm Password" })
+                                <small>@Html.ValidationMessageFor(model => model.ConfirmPassword, null, new { @class = "text-danger " })</small>
+                            </div>
+                            <div class="form-group pt-3 col-12">
+                                <button type="submit" id="btnRegister" class="col-12 btn btn-primary btn-block bg-danger border-danger">Register</button>
+                            </div>
+                            <div class="text-center col-12">
+                                <small>
+                                    Already have an account?
+                                    @Html.ActionLink("Log In", "Login", "Account")
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -111,6 +110,7 @@
             $('#RegisterAlert').hide('fade');
         });
     </script>
+
     @*<h2>@ViewBag.Title.</h2>
 
         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -147,5 +147,6 @@
         @section Scripts {
             @Scripts.Render("~/bundles/jqueryval")
         }*@
+
 </body>
 </html>

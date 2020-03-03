@@ -25,7 +25,9 @@ namespace BugTracker
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                ExpireTimeSpan = TimeSpan.FromDays(7),
                 LoginPath = new PathString("/Account/Login"),
+                CookieName = "LoginCookie",
                 Provider = new CookieAuthenticationProvider
                 {
                     // Enables the application to validate the security stamp when the user logs in.

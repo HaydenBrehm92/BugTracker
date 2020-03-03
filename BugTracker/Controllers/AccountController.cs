@@ -76,6 +76,11 @@ namespace BugTracker.Controllers
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+
+            //insert logic for rememberme and persistent cookies. Need expiration time to work and redirect back to login if user tries to 
+            //use [Authorized] without a valid cookie
+
+
             switch (result)
             {
                 case SignInStatus.Success:
@@ -86,7 +91,7 @@ namespace BugTracker.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+                    ModelState.AddModelError("", "Email or Password is incorrect.");
                     return View(model);
             }
         }
