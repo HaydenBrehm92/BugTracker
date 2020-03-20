@@ -2,30 +2,85 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+@section Styles {
+    @*<style>
+            #mainPageContainer{
+                background-color : #F5F5F5 !important;
+            }
+        </style>*@
+
+    <style>
+        #openProject, #createProject{
+            width: 100px !important;
+            border-radius: 12px;
+        }
+
+    </style>
+}
+
+<div id="mainPageContainer" class="container-fluid h-100 mx-0 align-items-center">
+    @*<div class="row h-100 justify-content-center align-items-center">
+            <div class="col-6 h-50" id="leftSide">
+                <div class="text-center" style="font-size: 20px;">
+                    <strong>Open Existing Project?</strong>
+                </div>
+                <div class="text-center mt-3">
+                    <button id="openProject" class="btn btn-primary">Open</button>
+                </div>
+            </div>
+            <div class="col-6 h-50" id="rightSide">
+                <div class="text-center" style="font-size: 20px;">
+                    <strong>Create A New Project?</strong>
+                </div>
+                <div class="text-center mt-3">
+                    <button id="createProject" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </div>*@
+    @*<div class="row h-100">
+            <div class="col-6 h-100 d-flex flex-column justify-content-center text-center" style="font-size: 20px;" id="leftSide">
+                <strong>Open Existing Project?</strong>
+                <button class="btn btn-primary align-self-center" id="openProject">Open</button>
+            </div>
+            <div class="col-6 h-100 d-flex flex-column justify-content-center text-center" style="font-size: 20px;" id="rightSide">
+                <strong>Create a New Project?</strong>
+                <button class="btn btn-primary align-self-center" id="createProject">Create</button>
+            </div>
+        </div>*@
+    <div class="row">
+        <div class="col-12 text-right">
+            <div class="btn-group mt-3">
+                <div>
+                    <button type="button" class="btn btn-danger btn-sm mr-2" id="openProject">Open</button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-danger btn-sm" id="createProject">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid h-100 w-100" id="contentPage">
+        <div class="row h-100 justify-content-center align-content-center ">
+            <strong class="col-12 text-muted text-center" style="font-size: 53px">Open an Existing Project</strong>
+            <strong class="col-12 text-muted text-center " style="font-size: 53px">Or</strong>
+            <strong class="col-12 text-muted text-center " style="font-size: 53px">Create a New Project</strong>
+
+        </div>
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+
+
+<script>
+   
+    document.getElementById('createProject').onclick = function () { createProj() };
+    document.getElementById('openProject').onclick = function () { openProj() };
+
+    function createProj() {
+        $('#contentPage').load('@Url.Action("CreateProject","Home")')
+    }
+
+    function openProj() {
+        $('#contentPage').load('@Url.Action("OpenProject","Home")')
+    }
+</script>

@@ -1,7 +1,23 @@
 ﻿@using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
+
+@using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
 {
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    @Html.AntiForgeryToken()
+    <li class="nav-item dropdown ">
+        <a class="nav-link fas fa-user" href="#" id="navBarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 23px;"></a>
+        <div class="dropdown-menu" aria-labelledby="navBarDropdown">
+            <h6 class="dropdown-header">Logged in as @User.Identity.GetUserName()</h6>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Account Management</a>
+            <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()">Log Out</a>
+        </div>
+    </li>
+
+}
+
+
+
+@*using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
     @Html.AntiForgeryToken()
 
@@ -11,12 +27,4 @@
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
     </ul>
-    }
-}
-else
-{
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-    </ul>
-}
+    }*@

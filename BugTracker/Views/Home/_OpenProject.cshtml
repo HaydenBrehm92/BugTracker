@@ -1,0 +1,20 @@
+﻿<style>
+    #newProjForm {
+        background-color: white;
+    }
+
+</style>
+
+@using (Html.BeginForm("OpenProject", "Home", FormMethod.Post, new { id = "openProj" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container h-100" id="newProjForm">
+        <div class="row h-100">
+            <div class="form-group text-center col-12">
+                Open Project
+            </div>
+
+        </div>
+    </div>
+}
+

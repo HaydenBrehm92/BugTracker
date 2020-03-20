@@ -6,10 +6,59 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("Styles", false)
 
+    <link href="~/Assets/css/all.min.css" rel="stylesheet" />
+    <link href="~/Assets/css/fontawesome.min.css" rel="stylesheet" />
+
+    <style type="text/css">
+        .ml-auto .dropdown-menu {
+            left: auto !important;
+            right: 0px;
+        }
+
+        html{
+            height:100vh;
+            margin:0px;
+        }
+        body{
+            height:100vh;
+            margin:0px;
+            padding-top:65px;
+            padding-bottom: 0px;
+            overflow-y:hidden;
+        }
+
+        .container-fluid {
+            height: 100vh;
+            width: 100vw;
+            background-color : #dcdcdc !important;
+        }
+        
+    </style>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar shadow navbar-expand-md fixed-top navbar-light pt-0">
+        <a class="navbar-brand" href="#">
+            <img src="~/Content/Logo2_150x47.png" alt="" />
+        </a>
+        <ul class="navbar-nav ml-auto">
+            @Html.Partial("_LoginPartial")
+        </ul>
+    </nav>
+
+    
+    @RenderBody()
+    
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+@*<div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -28,17 +77,4 @@
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
-</body>
-</html>
+    </div>*@
