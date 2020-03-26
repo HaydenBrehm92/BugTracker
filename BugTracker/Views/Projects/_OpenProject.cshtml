@@ -5,7 +5,7 @@
 
 </style>
 
-@using (Html.BeginForm("OpenProject", "Home", FormMethod.Post, new { id = "openProj" }))
+@using (Html.BeginForm("OpenProject", "Projects", FormMethod.Post, new { id = "openProj" }))
 {
     @Html.AntiForgeryToken()
     <div class="container h-100" id="newProjForm">

@@ -47,12 +47,14 @@
         </ul>
     </nav>
 
-    
+
     @RenderBody()
-    
+
 
 
     @Scripts.Render("~/bundles/jquery")
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>

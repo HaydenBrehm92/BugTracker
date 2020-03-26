@@ -3,12 +3,6 @@
 }
 
 @section Styles {
-    @*<style>
-            #mainPageContainer{
-                background-color : #F5F5F5 !important;
-            }
-        </style>*@
-
     <style>
         #openProject, #createProject{
             width: 100px !important;
@@ -19,34 +13,6 @@
 }
 
 <div id="mainPageContainer" class="container-fluid h-100 mx-0 align-items-center">
-    @*<div class="row h-100 justify-content-center align-items-center">
-            <div class="col-6 h-50" id="leftSide">
-                <div class="text-center" style="font-size: 20px;">
-                    <strong>Open Existing Project?</strong>
-                </div>
-                <div class="text-center mt-3">
-                    <button id="openProject" class="btn btn-primary">Open</button>
-                </div>
-            </div>
-            <div class="col-6 h-50" id="rightSide">
-                <div class="text-center" style="font-size: 20px;">
-                    <strong>Create A New Project?</strong>
-                </div>
-                <div class="text-center mt-3">
-                    <button id="createProject" class="btn btn-primary">Create</button>
-                </div>
-            </div>
-        </div>*@
-    @*<div class="row h-100">
-            <div class="col-6 h-100 d-flex flex-column justify-content-center text-center" style="font-size: 20px;" id="leftSide">
-                <strong>Open Existing Project?</strong>
-                <button class="btn btn-primary align-self-center" id="openProject">Open</button>
-            </div>
-            <div class="col-6 h-100 d-flex flex-column justify-content-center text-center" style="font-size: 20px;" id="rightSide">
-                <strong>Create a New Project?</strong>
-                <button class="btn btn-primary align-self-center" id="createProject">Create</button>
-            </div>
-        </div>*@
     <div class="row">
         <div class="col-12 text-right">
             <div class="btn-group mt-3">
@@ -77,10 +43,10 @@
     document.getElementById('openProject').onclick = function () { openProj() };
 
     function createProj() {
-        $('#contentPage').load('@Url.Action("CreateProject","Home")')
+        $('#contentPage').load('@Url.Action("CreateProject","Projects")')
     }
 
     function openProj() {
-        $('#contentPage').load('@Url.Action("OpenProject","Home")')
+        $('#contentPage').load('@Url.Action("OpenProject","Projects")')
     }
 </script>

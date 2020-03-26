@@ -12,7 +12,7 @@
     
 </style>
 
-@using (Html.BeginForm("CreateProject", "Home", FormMethod.Post, new { id = "createNewProj" }))
+@using (Html.BeginForm("CreateProject", "Projects", FormMethod.Post, new { id = "createNewProj" }))
 {
     @Html.AntiForgeryToken()
     <div class="container shadow h-100 " id="newProjForm">
@@ -22,11 +22,11 @@
                 <hr/>
             </div>
             
-            <div class="form-group text-center col-12">
+            <div class="form-group col-12">
                 @Html.TextBoxFor(model => model.ProjectName, new { @class = "form-control col-12", @id = "Projectname", @placeholder = "Project Name" })
                 <small>@Html.ValidationMessageFor(model => model.ProjectName, null, new { @class = "text-danger " })</small>
             </div>
-            <div class="form-group col-12 text-center">
+            <div class="form-group col-12">
                 <button type="submit" id="btnCreateProj" class="btn btn-danger btn-block" style="font-size:18px;">Create Project</button>
             </div>
         </div>
