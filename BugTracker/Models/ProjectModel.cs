@@ -3,19 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
-
+using System.Web.Mvc;
 namespace BugTracker.Models
 {
-    //possibly useless
     public class CreateNewProject
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "This Field is Required")]
         [StringLength(16, ErrorMessage = "Project name must be between 1 and 16 characters")]
+        [Remote("CheckName", "Projects", HttpMethod = "POST", ErrorMessage = "Project Name Already Exists")]
+        [Display(Name = "Project Name")]
         public string ProjectName { get; set; }
-
-        //public int ID { get; set; }
-        //public virtual string ApplicationUserID { get; set; }
-
     }
 
     public class Project

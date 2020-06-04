@@ -1,0 +1,25 @@
+﻿@using BugTracker.Models
+@model CreateNewProject
+
+<button type="button" class="btn btn-danger btn-sm dropdown-toggle" id="createProject" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Create
+</button>
+<div class="dropdown-menu dropdown-menu-right shadow mt-2" aria-labelledby="createProject">
+    <Strong class="dropdown-header text-center mx-1 px-2 py-1" style="font-size: 1.1rem;">Create a New Project</Strong>
+    <div class="dropdown-divider m-1"></div>
+    @using (Html.BeginForm("CreateProject", "Projects", FormMethod.Post, new { id = "createProj" }))
+    {
+        <div class="form-group px-2 py-1 m-1">
+
+            @Html.TextBoxFor(model => model.ProjectName, new { @class = "form-control col-12", @id = "Projectname", @placeholder = "Project Name" })
+            <small>@Html.ValidationMessageFor(model => model.ProjectName, null, new { @class = "text-danger " })</small>
+        </div>
+        <div class="form-group px-2 py-1 m-1">
+            <button type="submit" value="Submit" id="btnCreateProj" class="btn btn-danger btn-block" style="font-size:18px;">Create Project</button>
+        </div>
+    }
+</div>
+
+
+
+

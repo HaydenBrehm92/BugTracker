@@ -392,9 +392,9 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Shared\_LayoutPageManagement.cshtml" />
-    <Content Include="Views\Projects\CreateProject.cshtml" />
-    <Content Include="Views\Projects\_OpenProject.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
+    <Content Include="Views\Projects\OpenProject.cshtml" />
+    <Content Include="Views\Shared\_CreateProjectPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

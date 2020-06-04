@@ -30,7 +30,7 @@ namespace BugTracker.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model); //This needs to return the view with the partial view loaded
+                return View(model); 
             }
 
             ApplicationDbContext db = new ApplicationDbContext();
@@ -46,10 +46,47 @@ namespace BugTracker.Controllers
         }
 
         // Get
+        // Populate dropdown with project names
+        // May need to add recent timestamps
+        //public List<Project> OpenProjectDropdown()
+        //{
+        //    var list = new List<Project>();
+        //    ApplicationDbContext db = new ApplicationDbContext();
+
+        //    list = db.Projects.Where(n => n.ApplicationUserID == User.Identity.GetUserId()).ToList();
+
+        //    return list;
+        //}
+
+
+        // Get
         // Home/_OpenProject
+        // Possibly need to pass parameter into OpenProject to grab correct Project
+        // Need to figure out if i should make a seperate function for populating the dropdown field*
         public ActionResult OpenProject()
         {
-            return PartialView("~/Views/Projects/_OpenProject.cshtml");
+            //ApplicationDbContext db = new ApplicationDbContext();
+            //Project project = db.Projects.Find(User.Identity.GetUserId());
+
+            //return RedirectToAction("Index");
+
+            
+        //{
+            List<Project> list = new List<Project>();
+            ApplicationDbContext db = new ApplicationDbContext();
+            string currentId = User.Identity.GetUserId();
+            list = db.Projects.Where(n => n.ApplicationUserID == currentId).ToList();
+
+            return View(list);
+        }
+
+        // Checks for dup Project Names
+        [HttpPost]
+        public JsonResult CheckName(string ProjectName)
+        {
+            string id = User.Identity.GetUserId();
+            ApplicationDbContext db = new ApplicationDbContext();
+            return Json(!db.Projects.Any(s => s.ProjectName == ProjectName && s.ApplicationUserID == id), JsonRequestBehavior.AllowGet);
         }
     }
 }
