@@ -21,31 +21,42 @@ namespace BugTracker.Models
         public string ProjectName { get; set; }
         public virtual string ApplicationUserID { get; set; }
         public List<BugProperties> GetBugs { get; set; }
+
+        public DateTime DateCreated { get; set; }
+        public DateTime DateModified { get; set; }
+    }
+
+    public enum Category
+    {
+        ToDo,
+        InProgress,
+        Complete
+    }
+
+    public enum Status
+    {
+        Severe,
+        Mild,
+        Low
     }
 
     public class BugProperties
     {
-        public enum Category {
-            ToDo,
-            InProgress,
-            Complete
-        }
-
-        public enum Status { 
-            Severe,
-            Mild,
-            Low
-        }
-
         public string ID { get; set; }
 
         [Required]
         public string Description { get; set; }
 
         [Required]
-        public Category CategorySetGet { get; set; }
+        public Category Category { get; set; }
 
         [Required]
-        public Status StatusSetGet { get; set; }
+        public Status Status { get; set; }
+
+        public DateTime DateCreated { get; set; }
+
+        public DateTime DateModified { get; set; }
     }
+
+    
 }

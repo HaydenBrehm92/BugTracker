@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using BugTracker.Models;
 using Microsoft.AspNet.Identity;
+using PagedList;
 
 namespace BugTracker.Controllers
 {
@@ -38,46 +39,67 @@ namespace BugTracker.Controllers
             var item = new Project();
             item.ProjectName = model.ProjectName;
             item.ApplicationUserID = User.Identity.GetUserId();
+            item.DateCreated = DateTime.UtcNow; //Will NOT be showing this
+            item.DateModified = DateTime.Now; //I want to show this
 
             db.Projects.Add(item);
             db.SaveChanges();
 
-            return RedirectToAction("Index");  //return view with blank project template
+            return RedirectToAction("Index");  //return view with blank project template **Placeholder**
         }
 
         // Get
-        // Populate dropdown with project names
-        // May need to add recent timestamps
-        //public List<Project> OpenProjectDropdown()
-        //{
-        //    var list = new List<Project>();
-        //    ApplicationDbContext db = new ApplicationDbContext();
-
-        //    list = db.Projects.Where(n => n.ApplicationUserID == User.Identity.GetUserId()).ToList();
-
-        //    return list;
-        //}
-
-
-        // Get
         // Home/_OpenProject
-        // Possibly need to pass parameter into OpenProject to grab correct Project
-        // Need to figure out if i should make a seperate function for populating the dropdown field*
-        public ActionResult OpenProject()
+        public ActionResult OpenProject(int? page)
         {
-            //ApplicationDbContext db = new ApplicationDbContext();
-            //Project project = db.Projects.Find(User.Identity.GetUserId());
-
-            //return RedirectToAction("Index");
-
             
-        //{
-            List<Project> list = new List<Project>();
             ApplicationDbContext db = new ApplicationDbContext();
             string currentId = User.Identity.GetUserId();
-            list = db.Projects.Where(n => n.ApplicationUserID == currentId).ToList();
+            int pageSize = 5;
+            int pageNumber = (page ?? 1); //need to change possible for initial page create
+            var list = new ProjectViewModel()
+            {
+                RecentlyUsed = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateModified).Take(3).ToList(),
+                All = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateCreated).ToPagedList(pageNumber,pageSize),
+                
+            };
+
+            //if (list.All != null)
+            //{
+            //    page = 1;
+            //}
 
             return View(list);
+
+            //List<Project> list = new List<Project>();
+            //ApplicationDbContext db = new ApplicationDbContext();
+            //string currentId = User.Identity.GetUserId();
+            //list = db.Projects.Where(n => n.ApplicationUserID == currentId).ToList();
+
+            //return View(list);
+        }
+
+
+        //public ActionResult _OpenProjectPartial(int? page)
+        //{
+        //    ApplicationDbContext db = new ApplicationDbContext();
+        //    string currentId = User.Identity.GetUserId();
+        //    int pageSize = 5;
+        //    int pageNumber = (page ?? 1);
+        //    var list = new ProjectViewModel()
+        //    {
+        //        All = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateCreated).ToPagedList(pageNumber, pageSize)
+        //    };
+        //    return PartialView(list);
+        //}
+
+        //Get
+        //Projects/Project#
+        public ActionResult Project(int id)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var project = db.Projects.Where(n => n.ID == id);
+            return View(project);
         }
 
         // Checks for dup Project Names
