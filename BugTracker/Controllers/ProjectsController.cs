@@ -79,6 +79,18 @@ namespace BugTracker.Controllers
             //return View(list);
         }
 
+        public ActionResult UpdateListPage(int? page)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            string currentId = User.Identity.GetUserId();
+            var dataModel = new ProjectViewModel()
+            {
+                All = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateCreated).ToPagedList(page ?? 1, 5),
+            };
+
+            return PartialView("_OpenProjectPartial", dataModel);
+        }
+
 
         //public ActionResult _OpenProjectPartial(int? page)
         //{

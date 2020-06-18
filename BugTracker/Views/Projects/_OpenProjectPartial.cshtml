@@ -2,19 +2,20 @@
 @model ProjectViewModel
 @using PagedList.Mvc
 
-
 Page @(Model.All.PageCount < Model.All.PageNumber ? 0 : Model.All.PageNumber) of @Model.All.PageCount
 <div id="pager">
-    @Html.PagedListPager(Model.All, Page => Url.Action("OpenProject", "Projects", new { Page }))
+    @Html.PagedListPager(Model.All, Page => Url.Action("UpdateListPage", "Projects", new { Page }),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "AllTable"}))
 </div>
+
 @if (Model.All.Count > 0)
 {
     <table class="table table-hover " id="content">
         <thead>
             <tr class="d-flex">
-                <th class="col-10 headerClass" scope="col"></th>
-                <th class="col-1 headerClass" scope="col">Date Created</th>
-                <th class="col-1 headerClass" scope="col">Delete</th>
+                <th class="col-10 headerClass align-self-stretch" scope="col"></th>
+                <th class="col-1 headerClass align-self-stretch" scope="col">Date Created</th>
+                <th class="col-1 headerClass align-self-stretch" scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -44,5 +45,7 @@ Page @(Model.All.PageCount < Model.All.PageNumber ? 0 : Model.All.PageNumber) of
         </tbody>
     </table>
 }
+
+
 
 

@@ -10,6 +10,5 @@ namespace BugTracker.Models
     {
         public List<Project> RecentlyUsed { get; set; }
         public IPagedList<Project> All { get; set; }
-        
     }
 }
