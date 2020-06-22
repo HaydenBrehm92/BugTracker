@@ -52,65 +52,47 @@ namespace BugTracker.Controllers
         // Home/_OpenProject
         public ActionResult OpenProject(int? page)
         {
-            
             ApplicationDbContext db = new ApplicationDbContext();
             string currentId = User.Identity.GetUserId();
-            int pageSize = 5;
+            int pageSize = 10;
             int pageNumber = (page ?? 1); //need to change possible for initial page create
-            var list = new ProjectViewModel()
+            var model = new ProjectViewModel()
             {
-                RecentlyUsed = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateModified).Take(3).ToList(),
-                All = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateCreated).ToPagedList(pageNumber,pageSize),
-                
+                Page = page,
+                PageData = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateCreated).ToPagedList(pageNumber, pageSize)
             };
-
-            //if (list.All != null)
-            //{
-            //    page = 1;
-            //}
-
-            return View(list);
-
-            //List<Project> list = new List<Project>();
-            //ApplicationDbContext db = new ApplicationDbContext();
-            //string currentId = User.Identity.GetUserId();
-            //list = db.Projects.Where(n => n.ApplicationUserID == currentId).ToList();
-
-            //return View(list);
+            return View(model);
         }
 
-        public ActionResult UpdateListPage(int? page)
+        public PartialViewResult _OpenProjectPartial(ProjectViewModel model)
+        {
+            return PartialView(model);
+            
+        }
+
+        //DELETE METHOD GOES HERE!!!!!!
+        [HttpPost]
+        public ActionResult DeleteProject(int id)
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            string currentId = User.Identity.GetUserId();
-            var dataModel = new ProjectViewModel()
+            Project toRemove = db.Projects.Find(id);
+            if (toRemove != null)
             {
-                All = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateCreated).ToPagedList(page ?? 1, 5),
-            };
-
-            return PartialView("_OpenProjectPartial", dataModel);
+                db.Projects.Remove(toRemove);
+                db.SaveChanges();
+                return View("OpenProject");
+            }
+            else
+                return View("OpenProject");
         }
-
-
-        //public ActionResult _OpenProjectPartial(int? page)
-        //{
-        //    ApplicationDbContext db = new ApplicationDbContext();
-        //    string currentId = User.Identity.GetUserId();
-        //    int pageSize = 5;
-        //    int pageNumber = (page ?? 1);
-        //    var list = new ProjectViewModel()
-        //    {
-        //        All = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateCreated).ToPagedList(pageNumber, pageSize)
-        //    };
-        //    return PartialView(list);
-        //}
 
         //Get
         //Projects/Project#
         public ActionResult Project(int id)
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            var project = db.Projects.Where(n => n.ID == id);
+            var project = new Project();
+            project = db.Projects.Find(id);
             return View(project);
         }
 

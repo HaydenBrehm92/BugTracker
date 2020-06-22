@@ -8,7 +8,9 @@ namespace BugTracker.Models
 {
     public class ProjectViewModel
     {
-        public List<Project> RecentlyUsed { get; set; }
-        public IPagedList<Project> All { get; set; }
+        public int? Page { get; set; }
+        //public List<Project> RecentlyUsed { get; set; }
+        //public List<Project> All { get; set; }
+        public IPagedList<Project> PageData { get; set; }
     }
 }

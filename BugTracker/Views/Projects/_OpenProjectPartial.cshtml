@@ -1,16 +1,15 @@
 ﻿@using BugTracker.Models
+@using PagedList.EntityFramework
 @model ProjectViewModel
 @using PagedList.Mvc
 
-Page @(Model.All.PageCount < Model.All.PageNumber ? 0 : Model.All.PageNumber) of @Model.All.PageCount
-<div id="pager">
-    @Html.PagedListPager(Model.All, Page => Url.Action("UpdateListPage", "Projects", new { Page }),
-    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "AllTable"}))
-</div>
-
-@if (Model.All.Count > 0)
+Page @(Model.PageData.PageCount < Model.PageData.PageNumber ? 0 : Model.PageData.PageNumber) of @Model.PageData.PageCount
+    <div id="pager">
+        @Html.PagedListPager(Model.PageData, Page => Url.Action("OpenProject", new { Page }))
+    </div>
+@if (Model.PageData.TotalItemCount > 0)
 {
-    <table class="table table-hover " id="content">
+    <table class="table table-hover shadow-lg" id="content">
         <thead>
             <tr class="d-flex">
                 <th class="col-10 headerClass align-self-stretch" scope="col"></th>
@@ -19,9 +18,10 @@ Page @(Model.All.PageCount < Model.All.PageNumber ? 0 : Model.All.PageNumber) of
             </tr>
         </thead>
         <tbody>
-            @foreach (var project in Model.All)
+            @foreach (var project in Model.PageData)
             {
-                using (Html.BeginForm("Delete", "Projects", new { id = project.ID }))
+                
+                using (Html.BeginForm("DeleteProject", "Projects", new { id = project.ID }, FormMethod.Post, null))
                 {
 
                     <tr class="d-flex" id="cells">
@@ -34,6 +34,7 @@ Page @(Model.All.PageCount < Model.All.PageNumber ? 0 : Model.All.PageNumber) of
                             <i>@project.DateCreated.Date.ToShortDateString()</i>
                         </td>
                         <td class="col-1">
+
                             <button class="btn p-0" type="submit" value="Delete" onclick="return confirm
                                         ('Are you sure you want to delete this project?');">
                                 <i class="far fa-trash-alt fa-lg blockContainer"></i>
@@ -45,7 +46,3 @@ Page @(Model.All.PageCount < Model.All.PageNumber ? 0 : Model.All.PageNumber) of
         </tbody>
     </table>
 }
-
-
-
-

@@ -1,15 +1,11 @@
 ﻿@using BugTracker.Models
-@using PagedList.Mvc
 @model ProjectViewModel
-<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css">  @*is this needed?*@
-
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css">
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "OpenProject";
 }
-
-
 
 <style type="text/css">
     #Backgroundlayer {
@@ -59,6 +55,7 @@
     a {
         display: block;
     }
+
     tr:hover td {
         background-color: whitesmoke !important;
     }
@@ -72,112 +69,27 @@
         background-color: #d9534f;
         color: white;
     }
-    
-    
 </style>
 
 @*TODO:
     Need to be able to click a name and change view to that project.    *done*
-    Improve UI layout.
+    Improve UI layout. *done*
     Add an Edit button and delete.  *done*
     Need ONclick to pass id of cell *done*
-    Dates may be wrong / need to fix
-    Pagging???
-    Scrollbar fix??
+    Dates may be wrong / need to fix *maybe*
+    Pagging??? *done*
+    Scrollbar fix?? *done*
+    NEED TO BE ABLE TO DELETE (VERY CONFUSING RIGHT NOW)
 *@
 <div id="Backgroundlayer">
     <div class="container " id="projectList">
         <div class="row">
             <div class="col-12 p-4">
-                <h2>Most Recent</h2>
+                <h2>Projects</h2>
             </div>
         </div>
-
-        <table class="table table-hover ">
-            <thead>
-                <tr class="d-flex flex-row h-100 align-self-stretch">
-
-                    <th class="col-10 headerClass " scope="col"></th>
-                    <th class="col-1 headerClass " scope="col">Date Modified</th>
-                    <th class="col-1 headerClass " scope="col">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var project in Model.RecentlyUsed)
-                {
-                    using (Html.BeginForm("Delete", "Projects", new { id = project.ID }))
-                    {
-                        <tr class="d-flex" id="cells">
-                            <td class="col-10">
-                                @Html.ActionLink(project.ProjectName, "Project", "Projects", new { id = project.ID }, new
-                           { style = "text-decoration:none; color:black;", @class = "blockContainer" })
-                            </td>
-
-                            <td class="col-1">
-
-                                <i>@project.DateModified.Date.ToShortDateString()</i>
-                            </td>
-                            <td class="col-1">
-                                <button class="btn p-0" type="submit" value="Delete" onclick="return confirm
-                                        ('Are you sure you want to delete this project?');">
-                                    <i class="far fa-trash-alt fa-lg blockContainer"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-        <div class="row">
-            <div class="col-12 p-4">
-                <h2>All Projects</h2>
-            </div>
-        </div>
-        <div id="AllTable">
-            @{Html.RenderPartial("_OpenProjectPartial", Model);}   @*I have no idea why curly brackets work for this*@
-        </div>
-        
-
-        @*<table class="table table-hover">
-                <thead>
-                    <tr class="d-flex">
-                        <th class="col-10 headerClass" scope="col"></th>
-                        <th class="col-1 headerClass" scope="col">Date Created</th>
-                        <th class="col-1 headerClass" scope="col">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var project in Model.All)
-                    {
-                        using (Html.BeginForm("Delete", "Projects", new { id = project.ID }))
-                        {
-                            How to do Pagination
-                            if (Model.Count > 5)
-                            {
-
-                            }
-                            <tr class="d-flex" id="cells">
-                                <td class="col-10">
-                                    @Html.ActionLink(project.ProjectName, "Project", "Projects", new { id = project.ID }, new
-                                        { style = "text-decoration:none; color:black;", @class = "blockContainer" })
-                                </td>
-                                <td class="col-1">
-
-                                    <i>@project.DateCreated.Date.ToShortDateString()</i>
-                                </td>
-                                <td class="col-1">
-                                    <button class="btn p-0" type="submit" value="Delete" onclick="return confirm
-                                            ('Are you sure you want to delete this project?');">
-                                        <i class="far fa-trash-alt fa-lg blockContainer"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>*@
+            @Html.Action("_OpenProjectPartial", Model)
     </div>
 </div>
-
 
 
