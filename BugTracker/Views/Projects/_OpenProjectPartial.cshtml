@@ -3,10 +3,10 @@
 @model ProjectViewModel
 @using PagedList.Mvc
 
-Page @(Model.PageData.PageCount < Model.PageData.PageNumber ? 0 : Model.PageData.PageNumber) of @Model.PageData.PageCount
-    <div id="pager">
-        @Html.PagedListPager(Model.PageData, Page => Url.Action("OpenProject", new { Page }))
-    </div>
+@*Page @(Model.PageData.PageCount < Model.PageData.PageNumber ? 0 : Model.PageData.PageNumber) of @Model.PageData.PageCount
+<div id="pager">
+    @Html.PagedListPager(Model.PageData, Page => Url.Action("OpenProject", new { Page }))
+</div>
 @if (Model.PageData.TotalItemCount > 0)
 {
     <table class="table table-hover shadow-lg" id="content">
@@ -20,10 +20,10 @@ Page @(Model.PageData.PageCount < Model.PageData.PageNumber ? 0 : Model.PageData
         <tbody>
             @foreach (var project in Model.PageData)
             {
-                
-                using (Html.BeginForm("DeleteProject", "Projects", new { id = project.ID }, FormMethod.Post, null))
-                {
 
+
+                using (Html.BeginForm("DeleteProject", "Projects", new { id = project.ID }, FormMethod.Post, new { @class= "delete" }))
+                {
                     <tr class="d-flex" id="cells">
                         <td class="col-10">
                             @Html.ActionLink(project.ProjectName, "Project", "Projects", new { id = project.ID }, new
@@ -34,10 +34,9 @@ Page @(Model.PageData.PageCount < Model.PageData.PageNumber ? 0 : Model.PageData
                             <i>@project.DateCreated.Date.ToShortDateString()</i>
                         </td>
                         <td class="col-1">
-
-                            <button class="btn p-0" type="submit" value="Delete" onclick="return confirm
-                                        ('Are you sure you want to delete this project?');">
-                                <i class="far fa-trash-alt fa-lg blockContainer"></i>
+                            <a href="@Url.Action("DeleteProject", new { id = project.ID })" id="deletelink"><i class="far fa-trash-alt fa-lg blockContainer delete"></i></a>
+                            <button class="btn p-0" type="submit" value="Delete">
+                            <i class="far fa-trash-alt fa-lg blockContainer"></i>
                             </button>
                         </td>
                     </tr>
@@ -45,4 +44,7 @@ Page @(Model.PageData.PageCount < Model.PageData.PageNumber ? 0 : Model.PageData
             }
         </tbody>
     </table>
-}
+}*@
+
+
+

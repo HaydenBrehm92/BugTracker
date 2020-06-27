@@ -1,53 +1,27 @@
 ﻿@using BugTracker.Models
 
 
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @*<title>@ViewBag.Title - My ASP.NET Application</title>*@
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @RenderSection("Styles", false)
 
     <link href="~/Assets/css/all.min.css" rel="stylesheet" />
     <link href="~/Assets/css/fontawesome.min.css" rel="stylesheet" />
+    <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css">
+    <link href="@Url.Content("~/Content/layoutStyle.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/OpenProjectStyle.css")" rel="stylesheet" type="text/css" />
 
-    <style type="text/css">
-        .ml-auto .dropdown-menu {
-            left: auto !important;
-            right: 0px;
-        }
-
-        html {
-            height: 100vh;
-            margin: 0px;
-        }
-
-        body {
-            height: 100vh;
-            margin: 0px;
-            padding-top: 65px;
-            padding-bottom: 0px;
-            overflow-y: hidden;
-        }
-
-        .container-fluid {
-            height: 100vh;
-            width: 100vw;
-            background-color: #dcdcdc !important;
-        }
-
-        #openProject, #createProject {
-            width: 100px !important;
-            border-radius: 12px;
-        }
-    </style>
 </head>
 <body>
-    <nav class="navbar shadow navbar-expand-md fixed-top navbar-light pt-0">
-        <a class="navbar-brand" href="#">
+    <nav class="navbar shadow navbar-expand-md fixed-top navbar-light bg-white pt-0">
+        <a class="navbar-brand" href="@Url.Action("Index","Home")">
             <img src="~/Content/Logo2_150x47.png" alt="" />
         </a>
 
@@ -67,36 +41,15 @@
         </ul>
     </nav>
 
-    @RenderBody()
+    <div id="renderbody">
+        @RenderBody()
+    </div>
 
     @Scripts.Render("~/bundles/jquery")
     <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/bootstrap.bundle.min.js")" type="text/javascript"></script>
-    @*Scripts.Render("~/bundles/bootstrap")*@
     @RenderSection("scripts", required: false)
 </body>
-
 </html>
-
-@*<div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>*@

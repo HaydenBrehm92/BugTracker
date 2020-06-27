@@ -9,6 +9,7 @@ using PagedList;
 
 namespace BugTracker.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
         //GET: Projects
@@ -64,11 +65,11 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
-        public PartialViewResult _OpenProjectPartial(ProjectViewModel model)
-        {
-            return PartialView(model);
+        //public PartialViewResult _OpenProjectPartial(ProjectViewModel model)
+        //{
+        //    return PartialView(model);
             
-        }
+        //}
 
         //DELETE METHOD GOES HERE!!!!!!
         [HttpPost]
@@ -80,10 +81,10 @@ namespace BugTracker.Controllers
             {
                 db.Projects.Remove(toRemove);
                 db.SaveChanges();
-                return View("OpenProject");
+                return RedirectToAction("OpenProject");
             }
             else
-                return View("OpenProject");
+                return RedirectToAction("OpenProject"); //prevents backbutton from seeing deleted entry
         }
 
         //Get
@@ -91,9 +92,13 @@ namespace BugTracker.Controllers
         public ActionResult Project(int id)
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            var project = new Project();
-            project = db.Projects.Find(id);
-            return View(project);
+            Project project = db.Projects.Find(id);
+            if(project == null)
+            {
+                return PartialView("~/Views/Shared/Error.cshtml");
+            }
+            else
+                return View(project);
         }
 
         // Checks for dup Project Names

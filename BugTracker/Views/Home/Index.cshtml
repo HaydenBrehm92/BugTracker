@@ -1,52 +1,8 @@
-﻿
-
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@{
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    
     ViewBag.Title = "Home Page";
 }
-
-@*<style>
-    #mainPageContainer{
-        overflow-y:sc !important;
-    }
-</style>*@
-
-@*@section Styles {
-    <style>
-        #openProject, #createProject {
-            width: 100px !important;
-            border-radius: 12px;
-        }
-
-        .dropdown-menu-right{
-            left: auto !important;
-            right: 0 !important;
-        }
-    </style>
-}*@
-
-@*<div id="mainPageContainer" class="container-fluid h-100 mx-0 align-items-center">
-        <div class="row">
-            <div class="col-12 text-right">
-                <div class="btn-group mt-3">
-                    <div>
-                        <button type="button" class="btn btn-danger btn-sm mr-2" id="openProject">Open</button>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-danger btn-sm" id="createProject">Create</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid h-100 w-100" id="contentPage">
-            <div class="row h-100 justify-content-center align-content-center ">
-                <strong class="col-12 text-muted text-center" style="font-size: 53px">Open an Existing Project</strong>
-                <strong class="col-12 text-muted text-center " style="font-size: 53px">Or</strong>
-                <strong class="col-12 text-muted text-center " style="font-size: 53px">Create a New Project</strong>
-
-            </div>
-        </div>
-    </div>*@
 
 <div id="mainPageContainer" class="container-fluid h-100 mx-0 align-items-center">
     <div class="row h-100 justify-content-center align-content-center ">
@@ -55,58 +11,4 @@
         <strong class="col-12 text-muted text-center " style="font-size: 53px">Create a New Project</strong>
 
     </div>
-
-    @*<div class="row">
-            <div class="col-12 text-right">
-                <div class="dropdown">
-                    <div class="btn-group mt-3">
-                        <div>
-                            <button type="button" class="btn btn-danger btn-sm mr-2" id="openProject">Open</button>
-                        </div>
-                        <div>
-                            <button type="button" class="btn btn-danger btn-sm dropdown-toggle" id="createProject" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Create
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right shadow mt-2" aria-labelledby="createProject">
-                                <Strong class="dropdown-header text-center mx-1 px-2 py-1" style="font-size: 1.1rem;">Create a New Project</Strong>
-                                <div class="dropdown-divider m-1"></div>
-                                @using (Html.BeginForm("CreateProject", "Projects", FormMethod.Post, new { id = Model.ProjectName }))
-                                {
-                                    <div class="form-group px-2 py-1 m-1">
-                                        @*<Strong>@Html.LabelFor(model => model.ProjectName)</Strong>
-                                        @Html.TextBoxFor(model => model.ProjectName, new { @class = "form-control col-12", @id = "Projectname", @placeholder = "Project Name" })
-                                        <small>@Html.ValidationMessageFor(model => model.ProjectName, null, new { @class = "text-danger " })</small>
-                                    </div>
-                                    <div class="form-group px-2 py-1 m-1">
-                                        <button type="submit" value="Submit" onsubmit="updateContent" id="btnCreateProj" class="btn btn-danger btn-block" style="font-size:18px;">Create Project</button>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>*@
-    @*<div class="container-fluid h-100 w-100" id="contentPage">
-            <div class="row h-100 justify-content-center align-content-center ">
-                <strong class="col-12 text-muted text-center" style="font-size: 53px">Open an Existing Project</strong>
-                <strong class="col-12 text-muted text-center " style="font-size: 53px">Or</strong>
-                <strong class="col-12 text-muted text-center " style="font-size: 53px">Create a New Project</strong>
-
-            </div>
-        </div>*@
 </div>
-
-@*<script>
-
-        document.getElementById('createProject').onclick = function () { createProj() };
-        document.getElementById('openProject').onclick = function () { openProj() };
-
-        function createProj() {
-            $('#contentPage').load('@Url.Action("CreateProject","Projects")')
-        }
-
-        function openProj() {
-            $('#contentPage').load('@Url.Action("OpenProject","Projects")')
-        }
-    </script>*@
