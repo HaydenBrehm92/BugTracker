@@ -1,10 +1,388 @@
 ﻿@using BugTracker.Models
-@model Project
+@model BugViewModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Project";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "BuggyBoy - " + Model.Project.ProjectName;
 }
 
 @*container fluid with max height/width split into columns with ability to add new cards*@
-<h2>Project! @Model.ID</h2>
+<title>@ViewBag.Title</title>
 
+<style>
+    #Project-Container {
+        height: calc(100vh - 65px);
+        position: absolute;
+        background-color: whitesmoke !important;
+    }
+
+    .Bug-Headers {
+        border-bottom: groove;
+        border-bottom-width: 1px;
+    }
+
+    #projectName {
+        display: block;
+    }
+
+    .card-header {
+        background-color: white;
+        cursor: pointer;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+    
+    .fa-plus {
+        margin-right: 15px;
+        font-size: 28px;
+    }
+    .fa-plus:hover{
+        cursor: pointer;      
+    }
+    .row {
+        padding-right: 15px;
+    }
+
+    .card-container {
+        padding-left: 15px;
+    }
+    
+    .date-format{
+        font-size: 12px;
+    }
+    .fa-angle-down{
+        color: #d9534f;
+        transition: ease-in-out;
+    }
+    
+    .collapsed .fa-angle-down{
+        transform: rotate(90deg);
+    }
+    .fa-angle-double-down{
+        color:#d9534f ;
+        visibility:visible;
+        transition:ease-in-out;
+    }
+    .collapsed .fa-angle-double-down {
+        visibility: hidden;
+        transform: rotate(90deg);
+    }
+
+    .collapsed:hover .fa-angle-double-down {
+        visibility: visible;
+    }
+    
+    h3:hover{
+        cursor: pointer;
+    }
+</style>
+@*TO FIX:
+    Need a way to space headers.
+    Finalize the layout
+    Sorting dropdowns??
+    Testing Last.......
+*@
+
+@*TO ADD:
+    make cards like youtube home page / collapsable headers / return to top / ....*@
+
+@*TODOJ:
+    MAKE HEADERS DISSAPPEAR IF THERE IS NO CARDS AVAILABLE / Look into tags for filtering / still need sorting*@
+<div class="container-fluid " id="Project-Container">
+    <div class="mt-1 mb-4">
+        <h1 id="projectName">
+            @Model.Project.ProjectName
+        </h1>
+    </div>
+    <div class="row">
+        @if (Model.Project.GetBugs.Count > 0)
+        {
+
+            @*////////BUG SECTION////////*@
+            <div class="col-12" id="col1">
+                <div class="row mb-4" style="padding-left: 15px;">
+                    <h3 class="Bug-Headers col-11 m-0 p-0" aria-hidden="false" data-toggle="collapse"
+                        data-target="#Bug-Cards" aria-expanded="true" aria-controls="Bug-Cards">
+                        BUGS<i class="fa fa-angle-down"></i>
+                    </h3>
+                    <div class="Bug-Headers col-1 d-flex justify-content-center align-items-center p-0">
+                        <i class="ml-auto fa fa-plus fa-lg" aria-hidden="false" id="Add-Bug" data-toggle="collapse"
+                           data-target="#add-bug" aria-expanded="false" aria-controls="add-bug"></i>
+                    </div>
+                </div>
+                @using (Html.BeginForm("CreateBug", "Projects", new { id = Model.Project.ID }, FormMethod.Post))
+                {
+                    @Html.Partial("_CreateBugPartial", new BugProperties())
+                }
+                @if (Model.Bug.Count > 0)
+                {
+                    <div class="row card-container mb-4">
+                        @foreach (var item in Model.Bug)
+                        {
+                            <div class="collapse show col-lg-3 col-sm-12 p-1" id="Bug-Cards">
+                                <div class="card shadow">
+                                    <div class="card-header collapsed d-flex" aria-hidden="false" data-toggle="collapse"
+                                         data-target="#body-@item.ID" aria-expanded="false" aria-controls="body-@item.ID">
+                                        <div class="col-11">
+                                            <strong>@item.Description</strong>
+                                        </div>
+                                        <div class="col-1 align-self-end">
+                                            <i class="fa fa-angle-double-down fa-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div class="collapse" id="body-@item.ID">
+                                        <div class="card-body">
+                                            @using (Html.BeginForm("BugEdit", "Projects", new { id = Model.Project.ID, idbug = item.ID }, FormMethod.Post))
+                                            {
+                                                @Html.Partial("_CardBodyPartial", item)
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="d-flex">
+                                            <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
+                                            <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                }
+                else
+                {
+                    <div class="col-12 collapse" id="Bug-Cards">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p class="text-muted">EMPTY</p>
+                        </div>
+                    </div>
+
+                }
+            </div>
+
+            @*////////IN PROGRESS SECTION////////*@
+            <div class="col-12" id="col2">
+                <div class="row mb-4" style="padding-left: 15px;">
+                    <h3 class="collapsed Bug-Headers col-12 m-0 p-0" aria-hidden="false" data-toggle="collapse"
+                        data-target="#InProgress-Cards" aria-expanded="false" aria-controls="InProgress-Cards">
+                        IN PROGRESS<i class="fa fa-angle-down"></i>
+                    </h3>
+                </div>
+                @if (Model.InProgress.Count > 0)
+                {
+                    <div class="row card-container mb-4">
+                        @foreach (var item in Model.InProgress)
+                        {
+                            <div class="collapse col-lg-3 col-sm-12 p-1" id="InProgress-Cards">
+                                <div class="card shadow">
+                                    <div class="card-header collapsed d-flex" aria-hidden="false" data-toggle="collapse"
+                                         data-target="#body-@item.ID" aria-expanded="false" aria-controls="body-@item.ID">
+                                        <div class="col-11">
+                                            <strong>@item.Description</strong>
+                                        </div>
+                                        <div class="col-1 align-self-end">
+                                            <i class="fa fa-angle-double-down fa-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div class="collapse" id="body-@item.ID">
+                                        <div class="card-body">
+                                            @using (Html.BeginForm("BugEdit", "Projects", new { id = Model.Project.ID, idbug = item.ID }, FormMethod.Post))
+                                            {
+                                                @Html.Partial("_CardBodyPartial", item)
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="d-flex">
+                                            <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
+                                            <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="col-12 collapse" id="InProgress-Cards">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p class="text-muted">EMPTY</p>
+                        </div>
+                    </div>
+
+                }
+            </div>
+
+            @*////////TESTING SECTION////////*@
+            <div class="col-12" id="col3">
+                <div class="row mb-4" style="padding-left: 15px;">
+                    <h3 class="collapsed Bug-Headers col-12 m-0 p-0" aria-hidden="false" data-toggle="collapse"
+                        data-target="#Testing-Cards" aria-expanded="false" aria-controls="Testing-Cards">
+                        TESTING<i class="fa fa-angle-down"></i>
+                    </h3>
+                </div>
+                @if (Model.Testing.Count > 0)
+                {
+                    <div class="row card-container mb-4">
+                        @foreach (var item in Model.Testing)
+                        {
+                            <div class="collapse col-lg-3 col-sm-12 p-1" id="Testing-Cards">
+                                <div class="card shadow">
+                                    <div class="card-header collapsed d-flex" aria-hidden="false" data-toggle="collapse"
+                                         data-target="#body-@item.ID" aria-expanded="false" aria-controls="body-@item.ID">
+                                        <div class="col-11">
+                                            <strong>@item.Description</strong>
+                                        </div>
+                                        <div class="col-1 align-self-end">
+                                            <i class="fa fa-angle-double-down fa-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div class="collapse" id="body-@item.ID">
+                                        <div class="card-body">
+                                            @using (Html.BeginForm("BugEdit", "Projects", new { id = Model.Project.ID, idbug = item.ID }, FormMethod.Post))
+                                            {
+                                                @Html.Partial("_CardBodyPartial", item)
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="d-flex">
+                                            <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
+                                            <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="col-12 collapse" id="Testing-Cards">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p class="text-muted">EMPTY</p>
+                        </div>
+                    </div>
+
+                }
+            </div>
+
+            @*////////COMPLETED SECTION////////*@
+            <div class="col-12" id="col4">
+                <div class="row mb-4" style="padding-left: 15px;">
+                    <h3 class="collapsed Bug-Headers col-12 m-0 p-0" aria-hidden="false" data-toggle="collapse"
+                        data-target="#Completed-Cards" aria-expanded="false" aria-controls="Completed-Cards">
+                        COMPLETED<i class="fa fa-angle-down"></i>
+                    </h3>
+                </div>
+                @if (Model.Completed.Count > 0)
+                {
+                    <div class="row card-container mb-4">
+                        @foreach (var item in Model.Completed)
+                        {
+                            <div class="collapse col-lg-3 col-sm-12 p-1" id="Completed-Cards">
+                                <div class="card shadow">
+                                    <div class="card-header collapsed d-flex" aria-hidden="false" data-toggle="collapse"
+                                         data-target="#body-@item.ID" aria-expanded="false" aria-controls="body-@item.ID">
+                                        <div class="col-11">
+                                            <strong>@item.Description</strong>
+                                        </div>
+                                        <div class="col-1 align-self-end">
+                                            <i class="fa fa-angle-double-down fa-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div class="collapse" id="body-@item.ID">
+                                        <div class="card-body">
+                                            @using (Html.BeginForm("BugEdit", "Projects", new { id = Model.Project.ID, idbug = item.ID }, FormMethod.Post))
+                                            {
+                                                @Html.Partial("_CardBodyPartial", item)
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="d-flex">
+                                            <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
+                                            <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="col-12 collapse" id="Completed-Cards">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p class="text-muted">EMPTY</p>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        }
+
+        else
+        {
+            <div class="col-12" id="col1">
+                <div class="row mb-4" style=" padding-left: 15px;">
+                    <h3 class="Bug-Headers col-11 m-0">BUGS</h3>
+                    <div class="Bug-Headers col-1 d-flex justify-content-center align-items-center p-0">
+                        <i class="fa fa-plus-circle " aria-hidden="true" id="Add-Bug" data-toggle="collapse"
+                           data-target="#add-bug" aria-expanded="false" aria-controls="add-bug"></i>
+                    </div>
+                </div>
+                @using (Html.BeginForm("CreateBug", "Projects", new { id = Model.Project.ID }, FormMethod.Post))
+                {
+                    @Html.Partial("_CreateBugPartial", new BugProperties())
+                }
+                <div class="d-flex justify-content-center align-items-center">
+                    <p class="text-muted">EMPTY</p>
+                </div>
+            </div>
+            <div class="col-12" id="col2">
+                <h3 class="Bug-Headers">IN PROGRESS</h3>
+                <div class="d-flex justify-content-center align-items-center">
+                    <p class="text-muted">EMPTY</p>
+                </div>
+            </div>
+            <div class="col-12" id="col3">
+                <h3 class="Bug-Headers">TESTING</h3>
+                <div class="d-flex justify-content-center align-items-center">
+                    <p class="text-muted">EMPTY</p>
+                </div>
+            </div>
+            <div class="col-12" id="col4">
+                <h3 class="Bug-Headers">COMPLETED</h3>
+                <div class="d-flex justify-content-center align-items-center">
+                    <p class="text-muted">EMPTY</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+@*<script src
+<script>
+    $(document).ready(function () {
+        var itemdisabled = $('#bugform').find('.form-control').attr('disabled');
+        var itemreadonly = $('#bugform').find('.form-control').attr('readonly');
+
+        $('#edit-card').on('click', function () {
+            var btnval = $('#edit-card').val();
+            if (btnval == "disabled") {
+                itemdisabled('disabled', false);
+                itemreadonly('readonly', false);
+                btnval.val("enabled");
+            }
+            else {
+                itemdisabled('disabled', true);
+                itemreadonly('readonly', true);
+                btnval.val("disabled");
+            }
+        });
+    });
+       
+</script>*@

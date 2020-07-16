@@ -1,0 +1,41 @@
+﻿@model BugTracker.Models.BugProperties
+
+@Html.AntiForgeryToken()
+<div class="card collapse shadow-sm" id="add-bug">
+    <div class="card-header">
+        <strong class="col-12">New Bug</strong>
+    </div>
+    <div class="card-body">
+        <div class="form-group col-12">
+            <strong>@Html.LabelFor(m => m.Status, new { @class = "control-label col-12 p-0" })</strong>
+            @Html.EnumDropDownListFor(m => m.Status, new { @class = "form-control col-12" })
+            @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger col-12 p-0" })
+        </div>
+        <div class="form-group col-12">
+            <strong>@Html.LabelFor(m => m.Description, new { @class = "control-label col-12 p-0" })</strong>
+            @Html.TextAreaFor(m => m.Description, new { maxlength = 140, @class = "form-control col-12", @placeholder = "Enter Bug Description...", style = "height: 90px; resize:none;" })
+            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger col-12 p-0" })
+        </div>
+        <div class="form-group col-12">
+            <strong>@Html.LabelFor(m => m.ExpectedResult, new { @class = "control-label col-12 p-0" })</strong>
+            @Html.TextAreaFor(m => m.ExpectedResult, new { maxlength = 140, @class = "form-control col-12", @placeholder = "Enter Expected Result...", style = "height: 90px; resize:none;" })
+            @Html.ValidationMessageFor(m => m.ExpectedResult, "", new { @class = "text-danger col-12 p-0" })
+        </div>
+        <div class="form-group col-12">
+            <strong>@Html.LabelFor(m => m.RealityResult, new { @class = "control-label col-12 p-0" })</strong>
+            @Html.TextAreaFor(m => m.RealityResult, new { maxlength = 140, @class = "form-control col-12", @placeholder = "Enter Real Result...", style = "height: 90px; resize:none;" })
+            @Html.ValidationMessageFor(m => m.RealityResult, "", new { @class = "text-danger col-12 p-0" })
+        </div>
+        <div class="form-group col-12">
+            <strong>@Html.LabelFor(m => m.OptionalInformation, new { @class = "control-label col-12 p-0" })</strong>
+            @Html.TextAreaFor(m => m.OptionalInformation, new { maxlength = 140, @class = "form-control col-12", @placeholder = "Enter Optional Information...", style = "height: 90px; resize:none;" })
+            @Html.ValidationMessageFor(m => m.OptionalInformation, "", new { @class = "text-danger col-12 p-0" })
+        </div>
+        <div class="col-12">
+            <p>* Denotes a required field.</p>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-danger btn-block" type="submit" value="Submit">Submit</button>
+        </div>
+    </div>
+</div>

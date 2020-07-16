@@ -20,7 +20,7 @@ namespace BugTracker.Models
         public int ID { get; set; }
         public string ProjectName { get; set; }
         public virtual string ApplicationUserID { get; set; }
-        public List<BugProperties> GetBugs { get; set; }
+        public virtual ICollection<BugProperties> GetBugs { get; set; }
 
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
@@ -28,33 +28,58 @@ namespace BugTracker.Models
 
     public enum Category
     {
-        ToDo,
+        [Display(Name ="Unassigned")]
+        NoCategory,
+        [Display(Name ="In Progress")]
         InProgress,
+        [Display(Name = "Testing")]
+        Testing,
+        [Display(Name = "Completed")]
         Complete
     }
 
     public enum Status
     {
-        Severe,
-        Mild,
-        Low
+        Trivial,
+        Low,
+        Moderate,
+        Severe
     }
 
     public class BugProperties
     {
-        public string ID { get; set; }
+        public int ID { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "This Field is Required")]
+        [StringLength(140, ErrorMessage = "Description must be between 1 and 140 characters")]
+        [Display(Name = "Description*")]
         public string Description { get; set; }
 
-        [Required]
+        [Display(Name = "Category")]
         public Category Category { get; set; }
 
         [Required]
+        [Display(Name = "Bug Severity")]
         public Status Status { get; set; }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "This Field is Required")]
+        [StringLength(140, ErrorMessage = "Expected result must be between 1 and 140 characters")]
+        [Display(Name = "Expected Result*")]
+        public string ExpectedResult { get; set; }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "This Field is Required")]
+        [StringLength(140, ErrorMessage = "Real result must be between 1 and 140 characters")]
+        [Display(Name = "Real Result*")]
+        public string RealityResult { get; set; }
+
+        [StringLength(140, ErrorMessage = "Optional information must be between 1 and 140 characters")]
+        [Display(Name = "Optional Information")]
+        public string OptionalInformation { get; set; }
+
+        [Display(Name = "Date Created")]
         public DateTime DateCreated { get; set; }
 
+        [Display(Name = "Date Modified")]
         public DateTime DateModified { get; set; }
     }
 

@@ -257,6 +257,7 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="Scripts\custom\editcardsScript.js" />
     <Content Include="Scripts\custom\layoutscript.js" />
     <Content Include="Scripts\custom\openprojectscript.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
@@ -424,6 +425,8 @@
     <Content Include="Views\Shared\_CreateProjectPartial.cshtml" />
     <Content Include="Views\Projects\Project.cshtml" />
     <Content Include="Views\Projects\_OpenProjectPartial.cshtml" />
+    <Content Include="Views\Shared\_CreateBugPartial.cshtml" />
+    <Content Include="Views\Shared\_CardBodyPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
