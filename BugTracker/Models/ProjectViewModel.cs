@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using PagedList;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
 
 namespace BugTracker.Models
 {
@@ -19,5 +20,11 @@ namespace BugTracker.Models
         public List<BugProperties> InProgress { get; set; }
         public List<BugProperties> Testing { get; set; }
         public List<BugProperties> Completed { get; set; }
+
+        public string categoryval { get; set; }
+        public string propertyval { get; set; }
+        public string orderval { get; set; }
     }
+
+    
 }

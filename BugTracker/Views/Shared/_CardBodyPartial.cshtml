@@ -1,37 +1,42 @@
 ﻿@model BugTracker.Models.BugProperties
-<div class="align-self-end">
-    <button class="btn btn-danger btnclass" type="button" value="disabled" id="edit-card-@Model.ID">Edit</button>
-</div>
+@using BugTracker.Models
+
 <div class="form-row">
     <div class="form-group col-6" id="bugstatus">
         <strong>@Html.LabelFor(m => m.Status, new { @class = "control-label  p-0", @readonly = "readonly" })</strong>
-        @Html.EnumDropDownListFor(m => m.Status, new { @class = "form-control ", @disabled = "disabled" , @id = "status"+Model.ID})
+        @Html.EnumDropDownListFor(m => m.Status, new { @class = "form-control status", @disabled = "disabled", @id = "status-" + Model.ID })
         @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger  p-0", @readonly = "readonly" })
     </div>
     <div class="form-group col-6" id="bugcategory">
         <strong>@Html.LabelFor(m => m.Category, new { @class = "control-label  p-0", @readonly = "readonly" })</strong>
-        @Html.EnumDropDownListFor(m => m.Category, new { @class = "form-control ", @disabled = "disabled" , @id = "category"+Model.ID})
-    </div>
-    <div class="form-group col-12" id="bugdescription">
-        <strong>@Html.LabelFor(m => m.Description, new { @class = "control-label col-12 p-0", @readonly = "readonly" })</strong>
-        @Html.TextAreaFor(m => m.Description, new { maxlength = 140, @class = "form-control col-12", @placeholder = "Enter Bug Description...", style = "height: 90px; resize:none;", @readonly = "readonly", @id = "description"+Model.ID })
-        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger col-12 p-0", @readonly = "readonly" })
+        @Html.EnumDropDownListFor(m => m.Category, new { @class = "form-control category", @disabled = "disabled", @id = "category-" + Model.ID })
     </div>
     <div class="form-group col-12" id="bugexpectres">
         <strong>@Html.LabelFor(m => m.ExpectedResult, new { @class = "control-label col-12 p-0", @readonly = "readonly" })</strong>
-        @Html.TextAreaFor(m => m.ExpectedResult, new { maxlength = 140, @class = "form-control col-12", @placeholder = "Enter Expected Result...", style = "height: 90px; resize:none;", @readonly = "readonly", @id = "expected"+Model.ID })
+        @Html.TextAreaFor(m => m.ExpectedResult, new { maxlength = 140, @class = "form-control col-12 expected", @placeholder = "Enter Expected Result...", style = "height: 90px; resize:none;", @readonly = "readonly", @id = "expected-" + Model.ID })
         @Html.ValidationMessageFor(m => m.ExpectedResult, "", new { @class = "text-danger col-12 p-0", @readonly = "readonly" })
     </div>
+
     <div class="form-group col-12" id="bugrealres">
         <strong>@Html.LabelFor(m => m.RealityResult, new { @class = "control-label col-12 p-0", @readonly = "readonly" })</strong>
-        @Html.TextAreaFor(m => m.RealityResult, new { maxlength = 140, @class = "form-control col-12", @placeholder = "Enter Real Result...", style = "height: 90px; resize:none;", @readonly = "readonly", @id = "reality"+Model.ID })
+        @Html.TextAreaFor(m => m.RealityResult, new { maxlength = 140, @class = "form-control col-12 reality", @placeholder = "Enter Real Result...", style = "height: 90px; resize:none;", @readonly = "readonly", @id = "reality-" + Model.ID })
         @Html.ValidationMessageFor(m => m.RealityResult, "", new { @class = "text-danger col-12 p-0", @readonly = "readonly" })
     </div>
+
     <div class="form-group col-12" id="bugoptional">
         <strong>@Html.LabelFor(m => m.OptionalInformation, new { @class = "control-label col-12 p-0", @readonly = "readonly" })</strong>
-        @Html.TextAreaFor(m => m.OptionalInformation, new { maxlength = 140, @class = "form-control col-12", @placeholder = "Enter Optional Information...", style = "height: 90px; resize:none;", @readonly = "readonly", @id = "optional"+Model.ID })
+        @Html.TextAreaFor(m => m.OptionalInformation, new { maxlength = 140, @class = "form-control col-12 optional", @placeholder = "Enter Optional Information...", style = "height: 90px; resize:none;", @readonly = "readonly", @id = "optional-" + Model.ID })
         @Html.ValidationMessageFor(m => m.OptionalInformation, "", new { @class = "text-danger col-12 p-0", @readonly = "readonly" })
     </div>
+
+</div>
+<div class="d-flex">
+    <button class="btn btn-danger ml-auto savebtn invisible" type="submit" id="save-card-@Model.ID">Save</button>
 </div>
 
+@Html.HiddenFor(m => m.Status, new { Value = Model.Status, ID = "Status"+Model.ID })
+@Html.HiddenFor(m => m.Category, new { Value = Model.Category.ToDisplay(), ID = "Category"+Model.ID })
+@Html.HiddenFor(m => m.ExpectedResult, new { Value = Model.ExpectedResult, ID = "ExpectedResult"+Model.ID })
+@Html.HiddenFor(m => m.RealityResult, new { Value = Model.RealityResult, ID = "RealityResult"+Model.ID })
+@Html.HiddenFor(m => m.OptionalInformation, new { Value = Model.OptionalInformation, ID = "OptionalInformation"+Model.ID })
 

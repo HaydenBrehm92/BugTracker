@@ -38,7 +38,18 @@
 }
 
 .fa-trash-alt {
-    color: white;
+    opacity: 0.8;
+    color: #d9534f;
+    
+}
+
+td .btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+button:hover .fa-trash-alt {
+    opacity: 1.0;
 }
 
 .table td {
@@ -67,4 +78,10 @@ tr:hover td {
     border-bottom-width: 2px !important;
     background-color: #d9534f;
     color: white;
+}
+
+#Header{
+    padding-left: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }

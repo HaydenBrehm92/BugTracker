@@ -260,6 +260,7 @@
     <Content Include="Scripts\custom\editcardsScript.js" />
     <Content Include="Scripts\custom\layoutscript.js" />
     <Content Include="Scripts\custom\openprojectscript.js" />
+    <Content Include="Scripts\custom\sortCardsScript.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using System.Reflection;
+
 namespace BugTracker.Models
 {
     public class CreateNewProject
@@ -81,7 +83,23 @@ namespace BugTracker.Models
 
         [Display(Name = "Date Modified")]
         public DateTime DateModified { get; set; }
+
+        
+        
     }
 
-    
+    public static class CategoryExtensions
+    {
+        public static string ToDisplay(this Enum val)
+        {
+            return val.GetType()
+                .GetMember(val.ToString())
+                .First()
+                .GetCustomAttribute<DisplayAttribute>()
+                .GetName();
+        }
+    }
+
+
+
 }

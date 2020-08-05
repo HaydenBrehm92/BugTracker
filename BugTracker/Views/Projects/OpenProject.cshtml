@@ -7,66 +7,90 @@
     ViewBag.Title = "BuggyBoy - OpenProject";
 
 }
-    <title>@ViewBag.Title</title>
-@*TODO:
-    Need to be able to click a name and change view to that project.    *done*
-    Improve UI layout. *done*
-    Add an Edit button and delete.  *done*
-    Need ONclick to pass id of cell *done*
-    Dates may be wrong / need to fix *maybe*
-    Pagging??? *done*
-    Scrollbar fix?? *done*
-    NEED TO BE ABLE TO DELETE (VERY CONFUSING RIGHT NOW)
-*@
-@*<div id="Backgroundlayer">*@
-    <div class="container " id="projectList">
-        <div class="row">
-            <div class="col-12 p-2 mt-1">
-                <h1>Projects</h1>
-            </div>
+<title>@ViewBag.Title</title>
+
+
+<div class="container " id="projectList">
+    <div class="row">
+        <div class="col-12" id="Header">
+            <h1 class="m-0">Projects</h1>
         </div>
-        @*@Html.Action("_OpenProjectPartial", Model)*@
-        Page @(Model.PageData.PageCount < Model.PageData.PageNumber ? 0 : Model.PageData.PageNumber) of @Model.PageData.PageCount
-        <div id="pager">
-            @Html.PagedListPager(Model.PageData, Page => Url.Action("OpenProject", new { Page }))
-        </div>
+    </div>
+    @if (Model.PageData.PageCount > 1)
+    {
+        <p class="m-0">Page @(Model.PageData.PageCount < Model.PageData.PageNumber ? 0 : Model.PageData.PageNumber) of @Model.PageData.PageCount</p>
+    }
+    <div id="pager">
+        @Html.PagedListPager(Model.PageData, Page => Url.Action("OpenProject", new { Page }), new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded })
+    </div>
+
+    <table class="table table-hover shadow-lg" id="content">
+        <thead>
+            <tr class="d-flex">
+                <th class="col-10 headerClass align-self-stretch" scope="col"></th>
+                <th class="col-1 headerClass align-self-stretch" scope="col">Date Created</th>
+                <th class="col-1 headerClass align-self-stretch" scope="col">Delete</th>
+            </tr>
+        </thead>
         @if (Model.PageData.Count > 0)
         {
-            <table class="table table-hover shadow-lg" id="content">
-                <thead>
-                    <tr class="d-flex">
-                        <th class="col-10 headerClass align-self-stretch" scope="col"></th>
-                        <th class="col-1 headerClass align-self-stretch" scope="col">Date Created</th>
-                        <th class="col-1 headerClass align-self-stretch" scope="col">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var project in Model.PageData)
+            <tbody>
+                @foreach (var project in Model.PageData)
+                {
+                    using (Html.BeginForm("DeleteProject", "Projects", new { id = project.ID }, FormMethod.Post, new { @class = "delete" }))
                     {
+                        <tr class="d-flex" id="cells">
+                            <td class="col-10">
+                                @Html.ActionLink(project.ProjectName, "Project", "Projects", new { id = project.ID }, new
+                           { style = "text-decoration:none; color:black;", @class = "blockContainer" })
+                            </td>
+                            <td class="col-1">
 
+                                <i>@project.DateCreated.Date.ToShortDateString()</i>
+                            </td>
+                            <td class="col-1">
+                                <button class="btn p-0" type="button" id="DeleteProject-@project.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteProject-@project.ID" aria-hidden="false">
+                                    <i class="far fa-trash-alt fa-lg"></i>
+                                </button>
 
-                        using (Html.BeginForm("DeleteProject", "Projects", new { id = project.ID }, FormMethod.Post, new { @class = "delete" }))
-                        {
-                            <tr class="d-flex" id="cells">
-                                <td class="col-10">
-                                    @Html.ActionLink(project.ProjectName, "Project", "Projects", new { id = project.ID }, new
-                               { style = "text-decoration:none; color:black;", @class = "blockContainer" })
-                                </td>
-                                <td class="col-1">
+                                <div class="modal fade" id="deleteProject-@project.ID" aria-labelledby="DeleteProject-@project.ID" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header text-center">
+                                                <h4 class="modal-title w-100"><strong>Delete Project?</strong></h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Are you sure you wish to delete this project?<strong style="color:red;"> This action cannot be undone.</strong></p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn close mr-auto" type="button" style="font-size:16px;" data-dismiss="modal">Cancel</button>
+                                                <button class="btn btn-danger ml-auto" type="submit" value="Delete">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
 
-                                    <i>@project.DateCreated.Date.ToShortDateString()</i>
-                                </td>
-                                <td class="col-1">
-                                    @*<a href="@Url.Action("DeleteProject", new { id = project.ID })" id="deletelink"><i class="far fa-trash-alt fa-lg blockContainer delete"></i></a>*@
-                                    <button class="btn p-0 deletelink" type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this project?');">
-                                        <i class="far fa-trash-alt fa-lg blockContainer"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        }
                     }
-                </tbody>
-            </table>
+                }
+            </tbody>
         }
-    </div>
-@*</div>*@
+        else
+        {
+            <tbody>
+                <tr class="d-flex " id="cells">
+                    <td class="col-12 text-center text-muted">
+                        <div class="blockContainer">
+                            <p class="m-0">NO PROJECTS FOUND</p>
+                        </div>
+                    </td>
+
+                </tr>
+            </tbody>
+        }
+    </table>
+</div>
