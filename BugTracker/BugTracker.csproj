@@ -425,7 +425,6 @@
     <Content Include="Views\Projects\OpenProject.cshtml" />
     <Content Include="Views\Shared\_CreateProjectPartial.cshtml" />
     <Content Include="Views\Projects\Project.cshtml" />
-    <Content Include="Views\Projects\_OpenProjectPartial.cshtml" />
     <Content Include="Views\Shared\_CreateBugPartial.cshtml" />
     <Content Include="Views\Shared\_CardBodyPartial.cshtml" />
   </ItemGroup>

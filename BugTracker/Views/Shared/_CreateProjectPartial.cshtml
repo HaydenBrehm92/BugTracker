@@ -12,6 +12,7 @@
             </div>
             @using (Html.BeginForm("CreateProject", "Projects", FormMethod.Post, new { id = "createProj" }))
             {
+                @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <div class="form-group px-2 py-1 m-1">
                         @Html.TextBoxFor(model => model.ProjectName, new { @class = "form-control col-12", @id = "Projectname", @placeholder = "Project Name", @autocomplete = "off" })

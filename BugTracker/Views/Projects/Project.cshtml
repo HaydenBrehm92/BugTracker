@@ -10,9 +10,19 @@
 }
 
 
+@*DETAILS VIEW AND DONE*@
+
 <title>@ViewBag.Title</title>
 
 <style>
+    a .fa-undo-alt{
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-top:6px;
+        padding-bottom: 6px;
+        font-size: 28px;
+    }
+
     #sortsubmit:disabled{
         cursor: not-allowed;
     }
@@ -174,9 +184,6 @@
     }
 </style>
 
-@*TODO:
-    Reset Sort button?*@
-
 <div class="container-fluid " id="Project-Container">
     <div class="mt-1 mb-4 d-flex align-items-center flex-row">
         <div class="float-left">
@@ -202,7 +209,7 @@
         @Html.Partial("_CreateBugPartial", new BugProperties())
     }
 
-    @using (Html.BeginForm("Project", "Projects", new { id = Model.Project.ID } ,FormMethod.Get, new { id = "sortForm" }))
+    @using (Html.BeginForm("Project", "Projects", new { id = Model.Project.ID }, FormMethod.Get, new { id = "sortForm" }))
     {
         <input type="hidden" value="@ViewBag.categoryval" id="categoryval" name="categoryval" />
         <input type="hidden" value="@ViewBag.propertyval" id="propertyval" name="propertyval" />
@@ -268,8 +275,11 @@
                 </div>
             </div>
 
-            <div class="flex-column align-self-end" id="sortbtnWrapper">
+            <div class="flex-column align-self-end pr-2" id="sortbtnWrapper">
                 <button class="btn btn-outline-danger" id="sortsubmit" type="button" disabled>Sort</button>
+            </div>
+            <div class="flex-column align-self-end" id="sortresetbtnWrapper">
+                <a href="@Url.Action("Project", "Projects", new { id = Model.Project.ID})"><i class="fa fa-undo-alt"></i></a>
             </div>
         </div>
     </div>
@@ -337,6 +347,10 @@
                                                         </button>
                                                         @using (Html.BeginForm("BugDelete", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
                                                         {
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" value="@ViewBag.categoryval" id="categoryval-@item.ID" name="categoryval" />
+                                                            <input type="hidden" value="@ViewBag.propertyval" id="propertyval-@item.ID" name="propertyval" />
+                                                            <input type="hidden" value="@ViewBag.orderval" id="orderval-@item.ID" name="orderval" />
                                                             <div class="modal fade" id="deleteBug-@item.ID" aria-labelledby="DeleteBug-@item.ID" tabindex="-1" role="dialog" aria-hidden="true">
                                                                 <div class="modal-dialog" role="document">
                                                                     <div class="modal-content">
@@ -368,7 +382,7 @@
                                         <div class="card-footer">
                                             <div class="d-flex">
                                                 <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
-                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date</p>
+                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date.ToShortDateString()</p>
                                             </div>
                                         </div>
                                     </div>
@@ -436,6 +450,10 @@
                                                         </button>
                                                         @using (Html.BeginForm("BugDelete", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
                                                         {
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" value="@ViewBag.categoryval" id="categoryval-@item.ID" name="categoryval" />
+                                                            <input type="hidden" value="@ViewBag.propertyval" id="propertyval-@item.ID" name="propertyval" />
+                                                            <input type="hidden" value="@ViewBag.orderval" id="orderval-@item.ID" name="orderval" />
                                                             <div class="modal fade" id="deleteBug-@item.ID" aria-labelledby="DeleteBug-@item.ID" tabindex="-1" role="dialog" aria-hidden="true">
                                                                 <div class="modal-dialog" role="document">
                                                                     <div class="modal-content">
@@ -468,7 +486,7 @@
                                         <div class="card-footer">
                                             <div class="d-flex">
                                                 <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
-                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date</p>
+                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date.ToShortDateString()</p>
                                             </div>
                                         </div>
                                     </div>
@@ -535,6 +553,10 @@
                                                         </button>
                                                         @using (Html.BeginForm("BugDelete", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
                                                         {
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" value="@ViewBag.categoryval" id="categoryval-@item.ID" name="categoryval" />
+                                                            <input type="hidden" value="@ViewBag.propertyval" id="propertyval-@item.ID" name="propertyval" />
+                                                            <input type="hidden" value="@ViewBag.orderval" id="orderval-@item.ID" name="orderval" />
                                                             <div class="modal fade" id="deleteBug-@item.ID" aria-labelledby="DeleteBug-@item.ID" tabindex="-1" role="dialog" aria-hidden="true">
                                                                 <div class="modal-dialog" role="document">
                                                                     <div class="modal-content">
@@ -566,7 +588,7 @@
                                         <div class="card-footer">
                                             <div class="d-flex">
                                                 <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
-                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date</p>
+                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date.ToShortDateString()</p>
                                             </div>
                                         </div>
                                     </div>
@@ -634,6 +656,10 @@
                                                         </button>
                                                         @using (Html.BeginForm("BugDelete", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
                                                         {
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" value="@ViewBag.categoryval" id="categoryval-@item.ID" name="categoryval" />
+                                                            <input type="hidden" value="@ViewBag.propertyval" id="propertyval-@item.ID" name="propertyval" />
+                                                            <input type="hidden" value="@ViewBag.orderval" id="orderval-@item.ID" name="orderval" />
                                                             <div class="modal fade" id="deleteBug-@item.ID" aria-labelledby="DeleteBug-@item.ID" tabindex="-1" role="dialog" aria-hidden="true">
                                                                 <div class="modal-dialog " role="document">
                                                                     <div class="modal-content">
@@ -665,7 +691,7 @@
                                         <div class="card-footer">
                                             <div class="d-flex">
                                                 <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
-                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date</p>
+                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date.ToShortDateString()</p>
                                             </div>
                                         </div>
                                     </div>

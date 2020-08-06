@@ -1,6 +1,10 @@
 ﻿@model BugTracker.Models.BugProperties
 
 @Html.AntiForgeryToken()
+<input type="hidden" value="@ViewBag.categoryval" id="categoryval2" name="categoryval" />
+<input type="hidden" value="@ViewBag.propertyval" id="propertyval2" name="propertyval" />
+<input type="hidden" value="@ViewBag.orderval" id="orderval2" name="orderval" />
+
 <div class="modal fade" id="add-bug" tabindex="-1" role="dialog" aria-labelledby="Add-Bug" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

@@ -1,6 +1,10 @@
 ﻿@model BugTracker.Models.BugProperties
 @using BugTracker.Models
 
+@Html.AntiForgeryToken()
+<input type="hidden" value="@ViewBag.categoryval" id="editcategoryval-@Model.ID" name="categoryval" />
+<input type="hidden" value="@ViewBag.propertyval" id="editpropertyval-@Model.ID" name="propertyval" />
+<input type="hidden" value="@ViewBag.orderval" id="editorderval-@Model.ID" name="orderval" />
 <div class="form-row">
     <div class="form-group col-6" id="bugstatus">
         <strong>@Html.LabelFor(m => m.Status, new { @class = "control-label  p-0", @readonly = "readonly" })</strong>
@@ -34,9 +38,9 @@
     <button class="btn btn-danger ml-auto savebtn invisible" type="submit" id="save-card-@Model.ID">Save</button>
 </div>
 
-@Html.HiddenFor(m => m.Status, new { Value = Model.Status, ID = "Status"+Model.ID })
-@Html.HiddenFor(m => m.Category, new { Value = Model.Category.ToDisplay(), ID = "Category"+Model.ID })
-@Html.HiddenFor(m => m.ExpectedResult, new { Value = Model.ExpectedResult, ID = "ExpectedResult"+Model.ID })
-@Html.HiddenFor(m => m.RealityResult, new { Value = Model.RealityResult, ID = "RealityResult"+Model.ID })
-@Html.HiddenFor(m => m.OptionalInformation, new { Value = Model.OptionalInformation, ID = "OptionalInformation"+Model.ID })
+@Html.HiddenFor(m => m.Status, new { Value = Model.Status, ID = "Status" + Model.ID })
+@Html.HiddenFor(m => m.Category, new { Value = Model.Category.ToDisplay(), ID = "Category" + Model.ID })
+@Html.HiddenFor(m => m.ExpectedResult, new { Value = Model.ExpectedResult, ID = "ExpectedResult" + Model.ID })
+@Html.HiddenFor(m => m.RealityResult, new { Value = Model.RealityResult, ID = "RealityResult" + Model.ID })
+@Html.HiddenFor(m => m.OptionalInformation, new { Value = Model.OptionalInformation, ID = "OptionalInformation" + Model.ID })
 

@@ -29,6 +29,7 @@ namespace BugTracker.Controllers
         //Post
         // Home/CreateProject
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult CreateProject(CreateNewProject model)
         {
             if (!ModelState.IsValid)
@@ -69,14 +70,8 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
-        //public PartialViewResult _OpenProjectPartial(ProjectViewModel model)
-        //{
-        //    return PartialView(model);
-
-        //}
-
-        //DELETE METHOD GOES HERE!!!!!!
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DeleteProject(int id)
         {
             ApplicationDbContext db = new ApplicationDbContext();
@@ -93,8 +88,6 @@ namespace BugTracker.Controllers
 
         //Get
         //Projects/Project#
-
-        //FIX BUG
         public ActionResult Project(int id, string categoryval = "", string propertyval = "", string orderval = "")
         {
             ApplicationDbContext db = new ApplicationDbContext();
@@ -361,11 +354,11 @@ namespace BugTracker.Controllers
         //Create Bug
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateBug(int id, BugProperties model)
+        public ActionResult CreateBug(int id, BugProperties model, string categoryval = "", string propertyval = "", string orderval = "")
         {
             if (!ModelState.IsValid)
             {
-                return View("Project", model);
+                return RedirectToAction("Project", new { id, categoryval, propertyval, orderval }); 
             }
             
             ApplicationDbContext db = new ApplicationDbContext();
@@ -396,7 +389,7 @@ namespace BugTracker.Controllers
 
             db.SaveChanges();
 
-            return RedirectToAction("Project", new { id });
+            return RedirectToAction("Project", new { id, categoryval, propertyval, orderval });
         }
 
         // Read Bug
@@ -410,12 +403,13 @@ namespace BugTracker.Controllers
 
         // Edit Bug
         [HttpPost]
-        public ActionResult BugEdit(int id, int bug, BugProperties model)
+        [ValidateAntiForgeryToken]
+        public ActionResult BugEdit(int id, int bug, BugProperties model, string categoryval = "", string propertyval = "", string orderval = "")
         {
             ModelState["Description"].Errors.Clear();
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Project", new { id });
+                return RedirectToAction("Project", new { id, categoryval, propertyval, orderval });
             }
 
             ApplicationDbContext db = new ApplicationDbContext();
@@ -433,12 +427,13 @@ namespace BugTracker.Controllers
 
             
 
-            return RedirectToAction("Project", new { id }); //placeholder
+            return RedirectToAction("Project", new { id, categoryval, propertyval, orderval }); 
         }
 
         // Delete Bug
         [HttpPost]
-        public ActionResult BugDelete(int id, int bug)
+        [ValidateAntiForgeryToken]
+        public ActionResult BugDelete(int id, int bug, string categoryval = "", string propertyval = "", string orderval = "")
         {
             ApplicationDbContext db = new ApplicationDbContext();
             var toRemove = db.Projects.Find(id).GetBugs.Where(n => n.ID == bug).FirstOrDefault();
@@ -446,10 +441,10 @@ namespace BugTracker.Controllers
             {
                 db.Entry(toRemove).State = System.Data.Entity.EntityState.Deleted;
                 db.SaveChanges();
-                return RedirectToAction("Project", new { id }); //placeholder
+                return RedirectToAction("Project", new { id, categoryval, propertyval, orderval }); //placeholder
             }
             else
-                return RedirectToAction("Project", new { id });
+                return RedirectToAction("Project", new { id, categoryval, propertyval, orderval });
         }
 
         // Checks for dup Project Names

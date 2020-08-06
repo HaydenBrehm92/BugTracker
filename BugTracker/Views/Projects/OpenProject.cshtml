@@ -39,6 +39,7 @@
                 {
                     using (Html.BeginForm("DeleteProject", "Projects", new { id = project.ID }, FormMethod.Post, new { @class = "delete" }))
                     {
+                        @Html.AntiForgeryToken()
                         <tr class="d-flex" id="cells">
                             <td class="col-10">
                                 @Html.ActionLink(project.ProjectName, "Project", "Projects", new { id = project.ID }, new

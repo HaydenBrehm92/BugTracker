@@ -10,7 +10,7 @@
     var oCheck = orderCheckbox.getElementsByTagName('input');
     var sortSubmit = document.getElementById('sortsubmit');
 
-    sortSubmit.onclick = function (e) {
+    sortSubmit.onclick = function () {
         
         var cVal, pVal, oVal;
         for (var i = 0; i < cCheck.length; i++){
@@ -34,40 +34,6 @@
         document.getElementById('sortForm').submit(); // doesn't work need formid or name or something
 
     };
-
-    //sortSubmit.onclick = function () {
-    //    var cVal, pVal, oVal;
-    //    for (var i = 0; i < cCheck.length; i++){
-    //        if (cCheck[i].checked == true) {
-    //            cVal = cCheck[i].value;
-    //        }
-    //    }
-
-    //    for (var i = 0; i < pCheck.length; i++) {
-    //        if (pCheck[i].checked == true) {
-    //            pVal = pCheck[i].value;
-    //        }
-    //    }
-
-    //    for (var i = 0; i < oCheck.length; i++) {
-    //        if (oCheck[i].checked == true) {
-    //            oVal = oCheck[i].value;
-    //        }
-    //    }
-
-    //    $.ajax({
-    //        type: 'GET',
-    //        url: "/Projects/Project",
-    //        data: { id: idproj, categoryval: cVal, propertyval: pVal, orderval: oVal },
-    //        success: function (data) {
-
-    //            alert('Sorted')
-    //        },
-    //        error: function (er) {
-    //            alert('Not Sorted')
-    //        }
-    //    });
-    //};
 
     function uncheckOthers(input, str) {
         if (str === 'category') {
