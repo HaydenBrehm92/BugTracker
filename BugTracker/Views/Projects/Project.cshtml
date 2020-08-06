@@ -1,0 +1,711 @@
+﻿@using BugTracker.Models
+@model BugViewModel
+@{
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "BuggyBoy - " + Model.Project.ProjectName;
+    ViewBag.id = Model.Project.ID;
+    ViewBag.categoryval = Model.categoryval;
+    ViewBag.propertyval = Model.propertyval;
+    ViewBag.orderval = Model.orderval;
+}
+
+
+@*DETAILS VIEW AND DONE*@
+
+<title>@ViewBag.Title</title>
+
+<style>
+    a .fa-undo-alt{
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-top:6px;
+        padding-bottom: 6px;
+        font-size: 28px;
+    }
+
+    #sortsubmit:disabled{
+        cursor: not-allowed;
+    }
+    #sortCategory{
+       
+        border-right-width: 2px !important
+    }
+
+    #sortProperties {
+        border-right-width: 2px !important
+    }
+
+    #Project-Container {
+        height: calc(100vh - 65px);
+        position: absolute;
+        background-color: whitesmoke !important;
+    }
+
+    #searchContainer {
+        position: relative;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    #search {
+        background: #fff;
+        max-width: 550px;
+        width: 100%;
+        border-color: white;
+        border-width: 1px;
+        border-radius: 4px;
+        font-size: 16px;
+        padding-left: 22px;
+    }
+
+        #search:focus {
+            outline: none;
+            -webkit-box-shadow: 0px 0px 1px 3px #D9534F;
+            -moz-box-shadow: 0px 0px 1px 3px #D9534F;
+            box-shadow: 0px 0px 1px 3px #D9534F;
+        }
+
+    /*#searchContainer:before{
+            position: absolute;
+            content: "\f002";
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            left: -5px;
+            top:0;
+        }*/
+    .searchicon {
+        position: absolute;
+        left: 19px;
+        top: calc(50% - 0.5rem);
+    }
+
+    .Bug-Headers {
+        border-bottom: groove;
+        border-bottom-width: 1px;
+    }
+
+    /*#projectName {
+        display: block;
+    }*/
+
+    .card-header {
+        background-color: white;
+        cursor: pointer;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    .fa-sort {
+        font-size: 28px;
+    }
+
+        .fa-sort:hover {
+            color: #d9534f;
+            cursor: pointer;
+        }
+
+    .fa-plus {
+        font-size: 28px;
+    }
+
+        .fa-plus:hover {
+            color: #d9534f;
+            cursor: pointer;
+        }
+
+    .row {
+        padding-right: 15px;
+    }
+
+    .card-container {
+        padding-left: 15px;
+    }
+
+    .date-format {
+        font-size: 12px;
+    }
+
+    .fa-angle-down {
+        color: #d9534f;
+        transition: ease-in-out;
+    }
+
+    .collapsed .fa-angle-down {
+        transform: rotate(90deg);
+    }
+
+    .fa-angle-double-down {
+        color: #d9534f;
+        visibility: visible;
+        transition: ease-in-out;
+    }
+
+    .collapsed .fa-angle-double-down {
+        visibility: hidden;
+        transform: rotate(90deg);
+    }
+
+    .collapsed:hover .fa-angle-double-down {
+        visibility: visible;
+    }
+
+    h3:hover {
+        cursor: pointer;
+    }
+
+    .btnclass {
+        border-top-right-radius: 0.25rem !important;
+        border-bottom-right-radius: 0.25rem !important;
+    }
+
+    .fa-trash-alt {
+        color: black;
+    }
+
+    .btn:hover .fa-trash-alt {
+        color: #d9534f;
+    }
+
+    .btn:hover .fa-undo {
+        color: #d9534f;
+    }
+
+    .btn:hover .fa-pencil-alt {
+        color: #d9534f;
+    }
+
+    .card-modifiers > .btn {
+        border-width: 0px;
+    }
+
+    .card-modifiers .btn:focus {
+        outline: none;
+        box-shadow: none;
+    }
+</style>
+
+<div class="container-fluid " id="Project-Container">
+    <div class="mt-1 mb-4 d-flex align-items-center flex-row">
+        <div class="float-left">
+            <h1 id="projectName">
+                @Model.Project.ProjectName
+            </h1>
+        </div>
+        <div class="flex-fill" id="searchContainer">
+            <label for="search" class="fa fa-search searchicon" aria-hidden="true"></label>
+            <input class="" type="text" id="search" placeholder="Search Bugs" autocomplete="off" />
+        </div>
+        <div class="float-right" style="padding-right:15px;">
+            <i class="fa fa-sort" aria-hidden="false" id="Sorting" data-toggle="collapse" data-target="#SortWrapper"></i>
+
+        </div>
+        <div class="float-right" style="padding-right:15px;">
+            <i class="fa fa-plus fa-lg" aria-hidden="false" id="Add-Bug" data-toggle="modal"
+               data-target="#add-bug"></i>
+        </div>
+    </div>
+    @using (Html.BeginForm("CreateBug", "Projects", new { id = Model.Project.ID }, FormMethod.Post))
+    {
+        @Html.Partial("_CreateBugPartial", new BugProperties())
+    }
+
+    @using (Html.BeginForm("Project", "Projects", new { id = Model.Project.ID }, FormMethod.Get, new { id = "sortForm" }))
+    {
+        <input type="hidden" value="@ViewBag.categoryval" id="categoryval" name="categoryval" />
+        <input type="hidden" value="@ViewBag.propertyval" id="propertyval" name="propertyval" />
+        <input type="hidden" value="@ViewBag.orderval" id="orderval" name="orderval" />
+    }
+
+    <div class="collapse" id="SortWrapper">
+        <div class="d-flex flex-row flex-wrap mb-4">
+
+            <div class="flex-column mr-4 pr-4 border-right" id="sortCategory">
+                <h4 class="text-center">Category</h4>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyAll" value="All" />
+                    <label class="form-check-label" for="sortbyAll">All</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyBugs" value="Bugs" />
+                    <label class="form-check-label" for="sortbyBugs">Bugs</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyProgress" value="In Progress" />
+                    <label class="form-check-label" for="sortbyProgress">In Progress</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyTesting" value="Testing" />
+                    <label class="form-check-label" for="sortbyTesting">Testing</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyCompleted" value="Completed" />
+                    <label class="form-check-label" for="sortbyCompleted">Completed</label>
+                </div>
+            </div>
+
+            <div class="flex-column border-right mr-4 pr-4" id="sortProperties">
+                <h4 class="text-center">Property</h4>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyDesc" value="Description" disabled />
+                    <label class="form-check-label" for="sortbyDesc">Description</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyStatus" value="Status" disabled />
+                    <label class="form-check-label" for="sortbyStatus">Status</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyModified" value="Modified" disabled />
+                    <label class="form-check-label" for="sortbyModified">Date Modified</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyCreated" value="Created" disabled />
+                    <label class="form-check-label" for="sortbyCreated">Date Created</label>
+                </div>
+            </div>
+
+            <div class="flex-column border-right mr-4 pr-4" id="orderProperties">
+                <h4 class="text-center">Order</h4>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyAscend" value="Ascend" disabled />
+                    <label class="form-check-label" for="sortbyAscend">Ascending</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sortbyDescend" value="Descend" disabled />
+                    <label class="form-check-label" for="sortbyDescend">Descending</label>
+                </div>
+            </div>
+
+            <div class="flex-column align-self-end pr-2" id="sortbtnWrapper">
+                <button class="btn btn-outline-danger" id="sortsubmit" type="button" disabled>Sort</button>
+            </div>
+            <div class="flex-column align-self-end" id="sortresetbtnWrapper">
+                <a href="@Url.Action("Project", "Projects", new { id = Model.Project.ID})"><i class="fa fa-undo-alt"></i></a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        @if (Model.Project.GetBugs.Count > 0)
+        {
+
+            @*////////BUG SECTION////////*@
+
+            if (Model.Bug.Count > 0)
+            {
+                <div class="col-12" id="col1">
+                    <div class="row mb-4" style="padding-left: 15px;">
+                        <h3 class="Bug-Headers col-12 m-0 p-0" aria-hidden="false" data-toggle="collapse"
+                            data-target="#BugCollapseHelper" aria-expanded="true" aria-controls="BugCollapseHelper">
+                            BUGS<i class="fa fa-angle-down ml-2"></i>
+                        </h3>
+                    </div>
+                    <div class="row card-container mb-4" id="bugcontainer">
+                        <div class="collapse show card-group w-100" id="BugCollapseHelper">
+                            @foreach (var item in Model.Bug)
+                            {
+                                <div class="col-lg-3 col-sm-12 p-1" id="card#@item.ID">
+                                    <div class="card shadow" id="Bug-Cards">
+                                        @{
+                                            var colorval = "";
+                                            switch ((int)item.Status)
+                                            {
+                                                case (0):
+                                                    colorval = "border-color:green; border-bottom-width:2px;";
+                                                    break;
+                                                case (1):
+                                                    colorval = "border-color:blue; border-bottom-width:2px;";
+                                                    break;
+                                                case (2):
+                                                    colorval = "border-color:orange; border-bottom-width:2px;";
+                                                    break;
+                                                case (3):
+                                                    colorval = "border-color:red; border-bottom-width:2px;";
+                                                    break;
+                                            }
+                                        }
+
+                                        <div class="card-header collapsed d-flex" style="@colorval" aria-hidden="false" data-toggle="collapse"
+                                             data-target="#body-@item.ID" aria-expanded="false" aria-controls="body-@item.ID">
+                                            <div class="col-11">
+                                                <strong class="bug-desc" id="desc-@item.ID">@item.Description</strong>
+                                            </div>
+                                            <div class="col-1 align-self-end">
+                                                <i class="fa fa-angle-double-down fa-lg"></i>
+                                            </div>
+
+                                        </div>
+                                        <div class="collapse" id="body-@item.ID">
+                                            <div class="card-body">
+                                                <div class="d-flex mb-1">
+                                                    <div class="btn-group ml-auto card-modifiers">
+                                                        <button class="btn p-0 btnclass mr-2" type="button" value="disabled" id="edit-card-@item.ID">
+                                                            <i class="fa fa-pencil-alt fa-lg" aria-hidden="false"></i>
+                                                        </button>
+                                                        <button class="btn p-0" type="button" id="DeleteBug-@item.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteBug-@item.ID" aria-hidden="false">
+                                                            <i class="far fa-trash-alt fa-lg"></i>
+                                                        </button>
+                                                        @using (Html.BeginForm("BugDelete", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" value="@ViewBag.categoryval" id="categoryval-@item.ID" name="categoryval" />
+                                                            <input type="hidden" value="@ViewBag.propertyval" id="propertyval-@item.ID" name="propertyval" />
+                                                            <input type="hidden" value="@ViewBag.orderval" id="orderval-@item.ID" name="orderval" />
+                                                            <div class="modal fade" id="deleteBug-@item.ID" aria-labelledby="DeleteBug-@item.ID" tabindex="-1" role="dialog" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header text-center">
+                                                                            <h4 class="modal-title w-100"><strong>Delete Bug?</strong></h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>Are you sure you wish to delete this bug?<strong style="color:red;"> This action cannot be undone.</strong></p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn close mr-auto" type="button" style="font-size:16px;" data-dismiss="modal">Cancel</button>
+                                                                            <button class="btn btn-danger ml-auto" type="submit" value="Delete">Delete</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                @using (Html.BeginForm("BugEdit", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
+                                                {
+                                                    @Html.Partial("_CardBodyPartial", item)
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="d-flex">
+                                                <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
+                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date.ToShortDateString()</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @*////////IN PROGRESS SECTION////////*@
+
+            if (Model.InProgress.Count > 0)
+            {
+                <div class="col-12" id="col2">
+                    <div class="row mb-4" style="padding-left: 15px;">
+                        <h3 class="Bug-Headers col-12 m-0 p-0" aria-hidden="false" data-toggle="collapse"
+                            data-target="#ProgressCollapseHelper" aria-expanded="true" aria-controls="ProgressCollapseHelper">
+                            IN PROGRESS<i class="fa fa-angle-down ml-2"></i>
+                        </h3>
+                    </div>
+                    <div class="row card-container mb-4" id="inprogresscontainer">
+                        <div class="collapse show card-group w-100" id="ProgressCollapseHelper">
+                            @foreach (var item in Model.InProgress)
+                            {
+                                <div class="col-lg-3 col-sm-12 p-1" id="card#@item.ID">
+                                    <div class="card shadow" id="InProgress-Cards">
+                                        @{
+                                            var colorval = "";
+                                            switch ((int)item.Status)
+                                            {
+                                                case (0):
+                                                    colorval = "border-color:green; border-bottom-width:2px;";
+                                                    break;
+                                                case (1):
+                                                    colorval = "border-color:blue; border-bottom-width:2px;";
+                                                    break;
+                                                case (2):
+                                                    colorval = "border-color:orange; border-bottom-width:2px;";
+                                                    break;
+                                                case (3):
+                                                    colorval = "border-color:red; border-bottom-width:2px;";
+                                                    break;
+                                            }
+                                        }
+                                        <div class="card-header collapsed d-flex" style="@colorval" aria-hidden="false" data-toggle="collapse"
+                                             data-target="#body-@item.ID" aria-expanded="false" aria-controls="body-@item.ID">
+                                            <div class="col-11">
+                                                <strong class="progress-desc" id="desc-@item.ID">@item.Description</strong>
+                                            </div>
+                                            <div class="col-1 align-self-end">
+                                                <i class="fa fa-angle-double-down fa-lg"></i>
+                                            </div>
+                                        </div>
+                                        <div class="collapse" id="body-@item.ID">
+                                            <div class="card-body">
+                                                <div class="d-flex mb-1">
+                                                    <div class="btn-group ml-auto card-modifiers">
+                                                        <button class="btn p-0 btnclass mr-2" type="button" value="disabled" id="edit-card-@item.ID">
+                                                            <i class="fa fa-pencil-alt fa-lg" aria-hidden="false"></i>
+                                                        </button>
+                                                        <button class="btn p-0" type="button" id="DeleteBug-@item.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteBug-@item.ID" aria-hidden="false">
+                                                            <i class="far fa-trash-alt fa-lg"></i>
+                                                        </button>
+                                                        @using (Html.BeginForm("BugDelete", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" value="@ViewBag.categoryval" id="categoryval-@item.ID" name="categoryval" />
+                                                            <input type="hidden" value="@ViewBag.propertyval" id="propertyval-@item.ID" name="propertyval" />
+                                                            <input type="hidden" value="@ViewBag.orderval" id="orderval-@item.ID" name="orderval" />
+                                                            <div class="modal fade" id="deleteBug-@item.ID" aria-labelledby="DeleteBug-@item.ID" tabindex="-1" role="dialog" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header text-center">
+                                                                            <h4 class="modal-title w-100"><strong>Delete Bug?</strong></h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>Are you sure you wish to delete this bug?<strong style="color:red;"> This action cannot be undone.</strong></p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn close mr-auto" type="button" style="font-size:16px;" data-dismiss="modal">Cancel</button>
+                                                                            <button class="btn btn-danger ml-auto" type="submit" value="Delete">Delete</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                                @using (Html.BeginForm("BugEdit", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
+                                                {
+                                                    @Html.Partial("_CardBodyPartial", item)
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="d-flex">
+                                                <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
+                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date.ToShortDateString()</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @*////////TESTING SECTION////////*@
+
+            if (Model.Testing.Count > 0)
+            {
+                <div class="col-12" id="col3">
+                    <div class="row mb-4" style="padding-left: 15px;">
+                        <h3 class="Bug-Headers col-12 m-0 p-0" aria-hidden="false" data-toggle="collapse"
+                            data-target="#TestCollapseHelper" aria-expanded="true" aria-controls="TestCollapseHelper">
+                            TESTING<i class="fa fa-angle-down ml-2"></i>
+                        </h3>
+                    </div>
+                    <div class="row card-container mb-4" id="testingcontainer">
+                        <div class="collapse show card-group w-100" id="TestCollapseHelper">
+                            @foreach (var item in Model.Testing)
+                            {
+                                <div class="show col-lg-3 col-sm-12 p-1" id="card#@item.ID">
+                                    <div class="card shadow" id="Testing-Cards">
+                                        @{
+                                            var colorval = "";
+                                            switch ((int)item.Status)
+                                            {
+                                                case (0):
+                                                    colorval = "border-color:green; border-bottom-width:2px;";
+                                                    break;
+                                                case (1):
+                                                    colorval = "border-color:blue; border-bottom-width:2px;";
+                                                    break;
+                                                case (2):
+                                                    colorval = "border-color:orange; border-bottom-width:2px;";
+                                                    break;
+                                                case (3):
+                                                    colorval = "border-color:red; border-bottom-width:2px;";
+                                                    break;
+                                            }
+                                        }
+                                        <div class="card-header collapsed d-flex" style="@colorval" aria-hidden="false" data-toggle="collapse"
+                                             data-target="#body-@item.ID" aria-expanded="false" aria-controls="body-@item.ID">
+                                            <div class="col-11">
+                                                <strong class="test-desc" id="desc-@item.ID">@item.Description</strong>
+                                            </div>
+                                            <div class="col-1 align-self-end">
+                                                <i class="fa fa-angle-double-down fa-lg"></i>
+                                            </div>
+                                        </div>
+                                        <div class="collapse" id="body-@item.ID">
+                                            <div class="card-body">
+                                                <div class="d-flex mb-1">
+                                                    <div class="btn-group ml-auto card-modifiers">
+                                                        <button class="btn p-0 btnclass mr-2" type="button" value="disabled" id="edit-card-@item.ID">
+                                                            <i class="fa fa-pencil-alt fa-lg" aria-hidden="false"></i>
+                                                        </button>
+                                                        <button class="btn p-0" type="button" id="DeleteBug-@item.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteBug-@item.ID" aria-hidden="false">
+                                                            <i class="far fa-trash-alt fa-lg"></i>
+                                                        </button>
+                                                        @using (Html.BeginForm("BugDelete", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" value="@ViewBag.categoryval" id="categoryval-@item.ID" name="categoryval" />
+                                                            <input type="hidden" value="@ViewBag.propertyval" id="propertyval-@item.ID" name="propertyval" />
+                                                            <input type="hidden" value="@ViewBag.orderval" id="orderval-@item.ID" name="orderval" />
+                                                            <div class="modal fade" id="deleteBug-@item.ID" aria-labelledby="DeleteBug-@item.ID" tabindex="-1" role="dialog" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header text-center">
+                                                                            <h4 class="modal-title w-100"><strong>Delete Bug?</strong></h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>Are you sure you wish to delete this bug?<strong style="color:red;"> This action cannot be undone.</strong></p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn close mr-auto" type="button" style="font-size:16px;" data-dismiss="modal">Cancel</button>
+                                                                            <button class="btn btn-danger ml-auto" type="submit" value="Delete">Delete</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                @using (Html.BeginForm("BugEdit", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
+                                                {
+                                                    @Html.Partial("_CardBodyPartial", item)
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="d-flex">
+                                                <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
+                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date.ToShortDateString()</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+            @*////////COMPLETED SECTION////////*@
+
+            if (Model.Completed.Count > 0)
+            {
+                <div class="col-12" id="col4">
+                    <div class="row mb-4" style="padding-left: 15px;">
+                        <h3 class="Bug-Headers col-12 m-0 p-0" aria-hidden="false" data-toggle="collapse"
+                            data-target="#CompleteCollapseHelper" aria-expanded="true" aria-controls="CompleteCollapseHelper">
+                            COMPLETED<i class="fa fa-angle-down ml-2"></i>
+                        </h3>
+                    </div>
+                    <div class="row card-container mb-4" id="completedcontainer">
+                        <div class="collapse show card-group w-100" id="CompleteCollapseHelper">
+                            @foreach (var item in Model.Completed)
+                            {
+                                <div class="col-lg-3 col-sm-12 p-1" id="card#@item.ID">
+                                    <div class="card shadow" id="Completed-Cards">
+                                        @{
+                                            var colorval = "";
+                                            switch ((int)item.Status)
+                                            {
+                                                case (0):
+                                                    colorval = "border-color:green; border-bottom-width:2px;";
+                                                    break;
+                                                case (1):
+                                                    colorval = "border-color:blue; border-bottom-width:2px;";
+                                                    break;
+                                                case (2):
+                                                    colorval = "border-color:orange; border-bottom-width:2px;";
+                                                    break;
+                                                case (3):
+                                                    colorval = "border-color:red; border-bottom-width:2px;";
+                                                    break;
+                                            }
+                                        }
+                                        <div class="card-header collapsed d-flex" style="@colorval" aria-hidden="false" data-toggle="collapse"
+                                             data-target="#body-@item.ID" aria-expanded="false" aria-controls="body-@item.ID">
+                                            <div class="col-11">
+                                                <strong class="complete-desc" id="desc-@item.ID">@item.Description</strong>
+                                            </div>
+                                            <div class="col-1 align-self-end">
+                                                <i class="fa fa-angle-double-down fa-lg"></i>
+                                            </div>
+                                        </div>
+                                        <div class="collapse" id="body-@item.ID">
+                                            <div class="card-body">
+                                                <div class="d-flex mb-1">
+                                                    <div class="btn-group ml-auto card-modifiers">
+                                                        <button class="btn p-0 btnclass mr-2" type="button" value="disabled" id="edit-card-@item.ID">
+                                                            <i class="fa fa-pencil-alt fa-lg" aria-hidden="false"></i>
+                                                        </button>
+                                                        <button class="btn p-0" type="button" id="DeleteBug-@item.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteBug-@item.ID" aria-hidden="false">
+                                                            <i class="far fa-trash-alt fa-lg"></i>
+                                                        </button>
+                                                        @using (Html.BeginForm("BugDelete", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" value="@ViewBag.categoryval" id="categoryval-@item.ID" name="categoryval" />
+                                                            <input type="hidden" value="@ViewBag.propertyval" id="propertyval-@item.ID" name="propertyval" />
+                                                            <input type="hidden" value="@ViewBag.orderval" id="orderval-@item.ID" name="orderval" />
+                                                            <div class="modal fade" id="deleteBug-@item.ID" aria-labelledby="DeleteBug-@item.ID" tabindex="-1" role="dialog" aria-hidden="true">
+                                                                <div class="modal-dialog " role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header text-center">
+                                                                            <h4 class="modal-title w-100"><strong>Delete Bug?</strong></h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>Are you sure you wish to delete this bug?<strong style="color:red;"> This action cannot be undone.</strong></p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn close mr-auto" type="button" style="font-size:16px;" data-dismiss="modal">Cancel</button>
+                                                                            <button class="btn btn-danger ml-auto" type="submit" value="Delete">Delete</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                @using (Html.BeginForm("BugEdit", "Projects", new { id = Model.Project.ID, bug = item.ID }, FormMethod.Post))
+                                                {
+                                                    @Html.Partial("_CardBodyPartial", item)
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="d-flex">
+                                                <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @item.DateCreated.Date.ToShortDateString()</p>
+                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @item.DateModified.Date.ToShortDateString()</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        else
+        {
+
+        }
+    </div>
+</div>

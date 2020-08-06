@@ -1,0 +1,87 @@
+﻿#Backgroundlayer {
+    /*height:100vh;*/
+    /*padding-top:65px;*/
+    /*height: 100%;
+    width: 100vw;
+    overflow-y: auto;*/
+    /*background-color: #dcdcdc !important;*/
+    /*background-color: whitesmoke !important;*/
+    /*overflow-y: scroll !important;*/
+}
+
+#projectList {
+    height: 100%;
+    background-color: whitesmoke;
+}
+
+.border-bottom {
+    border-width: 2px !important;
+}
+
+.blockContainer {
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding-left: 1rem;
+    padding-top: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+}
+
+.deletelink {
+    background-color: #d9534f;
+    border-radius: 12px;
+}
+
+.deletelink:hover{
+    filter: brightness(80%);
+}
+
+.fa-trash-alt {
+    opacity: 0.8;
+    color: #d9534f;
+    
+}
+
+td .btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+button:hover .fa-trash-alt {
+    opacity: 1.0;
+}
+
+.table td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: hidden !important;
+    border-bottom: 1px solid !important;
+    border-color: #dee2e6 !important;
+    background-color: white;
+}
+
+a {
+    display: block;
+}
+
+tr:hover td {
+    background-color: whitesmoke !important;
+}
+
+.headerClass {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: hidden !important;
+    border-bottom-width: 2px !important;
+    background-color: #d9534f;
+    color: white;
+}
+
+#Header{
+    padding-left: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}

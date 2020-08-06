@@ -1,0 +1,64 @@
+﻿.ml-auto .dropdown-menu {
+    left: auto !important;
+    right: 0px;
+}
+
+.navbar {
+}
+
+html {
+    height: 100%;
+    margin: 0px;
+    
+}
+
+body {
+    height: 100%;
+    margin: 0px;
+    padding-top: 65px;
+    padding-bottom: 0px;
+    
+}
+
+#renderbody {
+    height: 100%;
+    position: relative;
+    background-color: whitesmoke;
+    overflow-y: auto;
+    overflow-x:hidden;
+}
+
+.container-fluid {
+    height: 100vh;
+    width: 100vw;
+    background-color: #dcdcdc !important;
+}
+
+#openProject, #createProject {
+    width: 100px !important;
+    border-radius: 12px;
+}
+
+#navCreateProj {
+    color: #d9534f;
+    opacity: 0.8;
+    font-size: 23px;
+}
+
+#navCreateProj:hover{
+    opacity: 1.0;
+    cursor: pointer;
+}
+
+a #navOpenProj {
+    color: #d9534f;
+    opacity: 0.8;
+    font-size: 23px;
+}
+.modal-footer .btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+a:hover #navOpenProj {
+    opacity: 1.0;
+}
