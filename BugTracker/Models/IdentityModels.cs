@@ -36,10 +36,15 @@ namespace BugTracker.Models
 
         public DbSet<Project> Projects { get; set; }
 
-        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-        //    modelBuilder.Entity
-        //}
+        public DbSet<BugProperties> BugProperties { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<BugProperties>()
+                .HasRequired(s => s.Project)
+                .WithMany(p => p.GetBugs)
+                .WillCascadeOnDelete();
+        }
     }
 }

@@ -52,6 +52,7 @@ namespace BugTracker.Controllers
             }
         }
 
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -61,7 +62,7 @@ namespace BugTracker.Controllers
             return View();
         }
 
-        //
+        
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
@@ -71,6 +72,20 @@ namespace BugTracker.Controllers
             if (!ModelState.IsValid)
             {
                 return View(model);
+            }
+
+            var user = await UserManager.FindByNameAsync(model.Email);
+            if (user != null)
+            {
+                if(!await UserManager.IsEmailConfirmedAsync(user.Id))
+                {
+                    ModelState.AddModelError("", "You need a confirmed email address to log in. Check the email account you used to register.");
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Please Confirm your account", "You cannot login until your account is confirmed. Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>." +
+                        "Don't know why you are receiving this email? This email is automated and may have been sent in error.");
+                    return View("Login", model);
+                }
             }
 
             // This doesn't count login failures towards account lockout
@@ -160,15 +175,16 @@ namespace BugTracker.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>." +
+                        "Don't know why you are receiving this email? This email is automated and may have been sent in error.");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login");
                 }
                 AddErrors(result);
             }
@@ -186,8 +202,19 @@ namespace BugTracker.Controllers
             {
                 return View("Error");
             }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            var checkifconfirmed = await UserManager.IsEmailConfirmedAsync(userId);
+
+            if (!checkifconfirmed)
+            {
+                ViewBag.boolean = false;
+                var result = await UserManager.ConfirmEmailAsync(userId, code);
+                return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            }
+            else
+            {
+                ViewBag.boolean = true;
+                return View("ConfirmEmail");
+            }
         }
 
         //
@@ -216,10 +243,11 @@ namespace BugTracker.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>." +
+                    "Don't know why you are receiving this email? This email is automated and may have been sent in error.");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form

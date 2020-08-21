@@ -8,7 +8,7 @@
         <div class="dropdown-menu" aria-labelledby="navBarDropdown">
             <h6 class="dropdown-header">Logged in as @User.Identity.GetUserName()</h6>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Account Management</a>
+            <a class="dropdown-item" href="@Url.Action("Index", "Manage")">Account Management</a>
             <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()">Log Out</a>
         </div>
     </li>

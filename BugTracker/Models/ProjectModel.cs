@@ -84,7 +84,7 @@ namespace BugTracker.Models
         [Display(Name = "Date Modified")]
         public DateTime DateModified { get; set; }
 
-        
+        public Project Project { get; set; }
         
     }
 

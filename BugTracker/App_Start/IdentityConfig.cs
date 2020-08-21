@@ -11,16 +11,42 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using BugTracker.Models;
+using System.Net.Mail;
+using System.Net;
+using System.Text;
+using System.Net.Configuration;
+using System.Configuration;
 
 namespace BugTracker
 {
     public class EmailService : IIdentityMessageService
     {
-        public Task SendAsync(IdentityMessage message)
+        public async Task SendAsync(IdentityMessage message)
         {
+
             // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            SmtpSection smtpSection = (SmtpSection)ConfigurationManager.GetSection("system.net/mailSettings/smtp");
+            using(MailMessage mailMessage = new MailMessage())
+            {
+                mailMessage.From = new MailAddress(smtpSection.From);
+                mailMessage.To.Add(message.Destination);
+                mailMessage.Subject = message.Subject;
+                mailMessage.IsBodyHtml = true;
+                mailMessage.Body = message.Body;
+
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = smtpSection.Network.Host;
+                smtp.EnableSsl = smtpSection.Network.EnableSsl;
+                NetworkCredential networkCredential = new NetworkCredential(smtpSection.Network.UserName, smtpSection.Network.Password);
+                smtp.UseDefaultCredentials = true;
+                smtp.Credentials = networkCredential;
+                smtp.Port = smtpSection.Network.Port;
+                await smtp.SendMailAsync(mailMessage);
+            }
+
+            //return Task.FromResult(0);
         }
+
     }
 
     public class SmsService : IIdentityMessageService

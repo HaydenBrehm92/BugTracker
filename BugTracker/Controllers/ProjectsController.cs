@@ -78,7 +78,7 @@ namespace BugTracker.Controllers
             Project toRemove = db.Projects.Find(id);
             if (toRemove != null)
             {
-                db.Projects.Remove(toRemove);
+                db.Entry(toRemove).State = System.Data.Entity.EntityState.Deleted;
                 db.SaveChanges();
                 return RedirectToAction("OpenProject");
             }
@@ -393,13 +393,14 @@ namespace BugTracker.Controllers
         }
 
         // Read Bug
-        public ActionResult BugDetails(int id, int bug)
-        {
-            ApplicationDbContext db = new ApplicationDbContext();
-            var bugs = db.Projects.Find(id).GetBugs.Where(n => n.ID == bug).FirstOrDefault();
+        // Maybe in the future
+        //public ActionResult BugDetails(int id, int bug)
+        //{
+        //    ApplicationDbContext db = new ApplicationDbContext();
+        //    var bugs = db.Projects.Find(id).GetBugs.Where(n => n.ID == bug).FirstOrDefault();
 
-            return View("Project", bugs);    //placeholder (expand in view or new view)
-        }
+        //    return View("Project", bugs);    //placeholder (expand in view or new view)
+        //}
 
         // Edit Bug
         [HttpPost]
@@ -413,7 +414,8 @@ namespace BugTracker.Controllers
             }
 
             ApplicationDbContext db = new ApplicationDbContext();
-            
+
+
             var bugs = db.Projects.Find(id).GetBugs.Where(n => n.ID == bug).FirstOrDefault();
             bugs.Category = model.Category;
             bugs.DateModified = DateTime.Now;
