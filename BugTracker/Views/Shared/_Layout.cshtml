@@ -25,10 +25,10 @@
         <button class="navbar-toggler" data-toggle="collapse" data-target=".navCollapse"><span class="fa fa-bars" aria-hidden="false"></span></button>
         <div class="collapse navbar-collapse navCollapse">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item p-2">
+                <li class="nav-item p-2" data-toggle="tooltip" data-placement="bottom" title="Open Project">
                     <a href="@Url.Action("OpenProject", "Projects")" class="nav-link p-0"><i class="fa fa-folder-open" id="navOpenProj"></i></a>
                 </li>
-                <li class="nav-item p-2">
+                <li class="nav-item p-2" data-toggle="tooltip" data-placement="bottom" title="Create New Project">
                     <i class="fa fa-plus" data-toggle="modal" aria-haspopup="true" id="navCreateProj" aria-expanded="false" data-target="#add-project"></i>
                 </li>
                 @Html.Partial("_LoginPartial")
@@ -40,6 +40,10 @@
 
     <div id="renderbody">
         @RenderBody()
+    </div>
+
+    <div id="footer">
+        @RenderSection("footer", required: false)
     </div>
 
     @Scripts.Render("~/bundles/jquery")

@@ -1,10 +1,12 @@
 ﻿@{
     //Layout = "~/Views/Shared/_Layout.cshtml";
-    
+
     ViewBag.Title = "Home Page";
 }
 
-<div id="mainPageContainer" class="container-fluid h-100 mx-0 align-items-center">
+
+
+<div class="container h-100" id="mainPageContainer">
     <div class="row h-100 justify-content-center align-content-center ">
         <strong class="col-12 text-muted text-center" style="font-size: 53px">Open an Existing Project</strong>
         <strong class="col-12 text-muted text-center " style="font-size: 53px">Or</strong>
@@ -12,3 +14,7 @@
 
     </div>
 </div>
+
+@section footer{
+    @{Html.RenderPartial("_Footer");}
+}

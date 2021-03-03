@@ -270,7 +270,7 @@
             realres.prop('readonly', false);
             optional.prop('readonly', false);
             $(this).prop('value', 'enabled');
-            $(this).html('<i class="fa fa-undo fa-lg" aria-hidden="false"></i>');
+            $(this).html('<i class="fa fa-undo fa-lg" aria-hidden="false" data-toggle="tooltip" data-placement="bottom" title="Undo"></i>');
             $('#save-card-' + id).addClass('visible').removeClass('invisible');
         }
         else {
@@ -281,7 +281,7 @@
             realres.prop('readonly', true);
             optional.prop('readonly', true);
             $(this).prop('value', 'disabled');
-            $(this).html('<i class="fa fa-pencil-alt fa-lg" aria-hidden="false"></i>');
+            $(this).html('<i class="fa fa-pencil-alt fa-lg" aria-hidden="false" data-toggle="tooltip" data-placement="bottom" title="Edit"></i>');
             $('#save-card-' + id).addClass('invisible').removeClass('visible');
         }
     });

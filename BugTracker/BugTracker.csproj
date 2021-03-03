@@ -426,6 +426,10 @@
     <Content Include="Views\Projects\Project.cshtml" />
     <Content Include="Views\Shared\_CreateBugPartial.cshtml" />
     <Content Include="Views\Shared\_CardBodyPartial.cshtml" />
+    <Content Include="Views\Manage\DeleteAccount.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_FooterAnon.cshtml" />
+    <Content Include="Views\Home\PrivacyPolicy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

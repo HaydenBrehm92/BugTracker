@@ -34,6 +34,14 @@
                 manager.Create(role);
             }
 
+            if(!context.Roles.Any(r => r.Name == "User"))
+            {
+                var store = new RoleStore<IdentityRole>(context);
+                var manager = new RoleManager<IdentityRole>(store);
+                var role = new IdentityRole { Id = "2", Name = "User" };
+                manager.Create(role);
+            }
+
             if(!context.Users.Any(u => u.UserName == "haydenbrehm92@gmail.com"))
             {
                 var store = new UserStore<ApplicationUser>(context);

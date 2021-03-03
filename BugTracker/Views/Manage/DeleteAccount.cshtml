@@ -1,0 +1,53 @@
+﻿@model BugTracker.Models.DeleteAccountViewModel
+@using Microsoft.AspNet.Identity
+
+@{
+    Layout = null;
+    ViewBag.Title = "Delete Account - BuggyBoy";
+}
+
+<style>
+    #confirmDeleteWrap {
+        background-color: whitesmoke !important;
+    }
+</style>
+
+<title>@ViewBag.Title</title>
+
+<div class="flex-column col-12" id="confirmDeleteWrap">
+    @using (Ajax.BeginForm("DeleteAccount", "Manage", null, new AjaxOptions()
+    {
+        UpdateTargetId = "confirmDeleteWrap",
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.ReplaceWith,
+        OnSuccess = "onSuccess"
+    }
+    , new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="col-12">
+            <h2 class="mt-2">Delete Account</h2>
+        </div>
+        <div class="col-12">
+            <p>Type <span class="font-weight-bold text-danger">DELETE</span> below to permanently delete your account.</p>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                @Html.TextBoxFor(m => m.ConfirmDelete, new { @class = "form-control col-12", @placeholder = "DELETE" })
+                @Html.ValidationMessageFor(m => m.ConfirmDelete, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <button type="submit" id="deleteAcc" class="btn btn-danger btn-block">Submit</button>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    function onSuccess(data) {
+        if (data.RedirectUrl) {
+            window.location.href = data.RedirectUrl;
+        }
+    }
+</script>
