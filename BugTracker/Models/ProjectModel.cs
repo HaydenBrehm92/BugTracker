@@ -5,6 +5,7 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BugTracker.Models
 {
@@ -84,7 +85,7 @@ namespace BugTracker.Models
         [Display(Name = "Date Modified")]
         public DateTime DateModified { get; set; }
 
-        
+        public Project Project { get; set; }
         
     }
 

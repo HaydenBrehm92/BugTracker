@@ -36,10 +36,38 @@ namespace BugTracker.Models
 
         public DbSet<Project> Projects { get; set; }
 
-        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-        //    modelBuilder.Entity
-        //}
+        public DbSet<BugProperties> BugProperties { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<BugProperties>()
+                .HasRequired(s => s.Project)
+                .WithMany(p => p.GetBugs)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(s => s.Projects)
+                .WithRequired()
+                .WillCascadeOnDelete(true);
+
+
+            //modelBuilder.Entity<Project>()
+            //    .HasRequired(s => s.ApplicationUserID)
+            //    .WithMany()
+            //    .HasForeignKey(a => a.ApplicationUserID)
+            //    .WillCascadeOnDelete(true);
+
+
+            //modelBuilder.Entity<IdentityUser>()
+            //    .ha(a => a.)
+            //    .WithMany(b => b.GetBugs)
+            //    .
+
+            //modelBuilder.Entity<Project>()
+            //    .HasMany(b => b.GetBugs)
+            //    .WithRequired(s => s.Project)
+            //    .WillCascadeOnDelete(true);
+        }
     }
 }

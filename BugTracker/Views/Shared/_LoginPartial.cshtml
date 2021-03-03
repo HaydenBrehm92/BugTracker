@@ -3,12 +3,12 @@
 @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
 {
     @Html.AntiForgeryToken()
-    <li class="nav-item p-2 dropdown ">
+    <li class="nav-item p-2 dropdown" data-toggle="tooltip" data-placement="bottom" title="Account">
         <a class="nav-link p-0 fas fa-user" href="#" id="navBarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 23px;"></a>
         <div class="dropdown-menu" aria-labelledby="navBarDropdown">
             <h6 class="dropdown-header">Logged in as @User.Identity.GetUserName()</h6>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Account Management</a>
+            <a class="dropdown-item" href="@Url.Action("Index", "Manage")">Account Management</a>
             <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()">Log Out</a>
         </div>
     </li>

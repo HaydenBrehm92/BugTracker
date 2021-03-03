@@ -83,4 +83,17 @@ namespace BugTracker.Models
         public string SelectedProvider { get; set; }
         public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
     }
+
+    public class DeleteAccountViewModel
+    {
+        
+        private const string StrDelete = "DELETE";
+
+        public string GetStr { get { return StrDelete; } }
+
+        [Required]
+        [Compare("GetStr", ErrorMessage = "DELETE was input incorrectly. The field is case-sensitive.")]
+        [Display(Name = "Delete")]
+        public string ConfirmDelete { get; set; }
+    }
 }

@@ -92,12 +92,21 @@
                                     @Html.ActionLink("Register", "Register", "Account")
                                 </small>
                             </div>
+                            <div class="text-center col-12">
+                                <small>
+                                    @Html.ActionLink("Forgot your password?", "ForgotPassword")
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         }
     </div>
+
+    
+    @{Html.RenderPartial("_FooterAnon");}
+    @*@{Html.RenderPartial("_Footer");}*@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

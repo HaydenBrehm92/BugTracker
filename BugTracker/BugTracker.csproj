@@ -421,12 +421,15 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Shared\_LayoutPageManagement.cshtml" />
-    <Content Include="Views\Projects\Index.cshtml" />
     <Content Include="Views\Projects\OpenProject.cshtml" />
     <Content Include="Views\Shared\_CreateProjectPartial.cshtml" />
     <Content Include="Views\Projects\Project.cshtml" />
     <Content Include="Views\Shared\_CreateBugPartial.cshtml" />
     <Content Include="Views\Shared\_CardBodyPartial.cshtml" />
+    <Content Include="Views\Manage\DeleteAccount.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_FooterAnon.cshtml" />
+    <Content Include="Views\Home\PrivacyPolicy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

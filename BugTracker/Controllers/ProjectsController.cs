@@ -21,10 +21,10 @@ namespace BugTracker.Controllers
 
         // Get
         // Home/CreateProject
-        public ActionResult CreateProject()
-        {
-            return PartialView("~/Views/Projects/CreateProject.cshtml");
-        }
+        //public ActionResult CreateProject()
+        //{
+        //    return PartialView("~/Views/Projects/CreateProject.cshtml");
+        //}
 
         //Post
         // Home/CreateProject
@@ -44,7 +44,7 @@ namespace BugTracker.Controllers
             item.ProjectName = model.ProjectName;
             item.ApplicationUserID = User.Identity.GetUserId();
             item.DateCreated = DateTime.UtcNow; //Will NOT be showing this
-            item.DateModified = DateTime.Now; //I want to show this
+            item.DateModified = DateTime.UtcNow; //I want to show this
 
             db.Projects.Add(item);
             db.SaveChanges();
@@ -54,6 +54,7 @@ namespace BugTracker.Controllers
             return RedirectToAction("Project", new { id });  //return view with blank project template **Placeholder**
         }
 
+        //order by most recently modified
         // Get
         // Home/_OpenProject
         public ActionResult OpenProject(int? page)
@@ -65,7 +66,7 @@ namespace BugTracker.Controllers
             var model = new ProjectViewModel()
             {
                 Page = page,
-                PageData = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateCreated).ToPagedList(pageNumber, pageSize)
+                PageData = db.Projects.Where(n => n.ApplicationUserID == currentId).OrderByDescending(t => t.DateModified).ToPagedList(pageNumber, pageSize)
             };
             return View(model);
         }
@@ -78,7 +79,7 @@ namespace BugTracker.Controllers
             Project toRemove = db.Projects.Find(id);
             if (toRemove != null)
             {
-                db.Projects.Remove(toRemove);
+                db.Entry(toRemove).State = System.Data.Entity.EntityState.Deleted;
                 db.SaveChanges();
                 return RedirectToAction("OpenProject");
             }
@@ -368,7 +369,7 @@ namespace BugTracker.Controllers
                 //Category = model.Category,
                 Category = 0,
                 DateCreated = DateTime.UtcNow,
-                DateModified = DateTime.Now,
+                DateModified = DateTime.UtcNow,
                 Description = model.Description,
                 Status = model.Status,
                 ExpectedResult = model.ExpectedResult,
@@ -387,19 +388,21 @@ namespace BugTracker.Controllers
             else
                 project.GetBugs.Add(bug);
 
+            project.DateModified = DateTime.UtcNow; //project has been modified
             db.SaveChanges();
 
             return RedirectToAction("Project", new { id, categoryval, propertyval, orderval });
         }
 
         // Read Bug
-        public ActionResult BugDetails(int id, int bug)
-        {
-            ApplicationDbContext db = new ApplicationDbContext();
-            var bugs = db.Projects.Find(id).GetBugs.Where(n => n.ID == bug).FirstOrDefault();
+        // Maybe in the future
+        //public ActionResult BugDetails(int id, int bug)
+        //{
+        //    ApplicationDbContext db = new ApplicationDbContext();
+        //    var bugs = db.Projects.Find(id).GetBugs.Where(n => n.ID == bug).FirstOrDefault();
 
-            return View("Project", bugs);    //placeholder (expand in view or new view)
-        }
+        //    return View("Project", bugs);    //placeholder (expand in view or new view)
+        //}
 
         // Edit Bug
         [HttpPost]
@@ -413,16 +416,18 @@ namespace BugTracker.Controllers
             }
 
             ApplicationDbContext db = new ApplicationDbContext();
-            
+
+            Project project = db.Projects.Find(id);
             var bugs = db.Projects.Find(id).GetBugs.Where(n => n.ID == bug).FirstOrDefault();
             bugs.Category = model.Category;
-            bugs.DateModified = DateTime.Now;
+            bugs.DateModified = DateTime.UtcNow;
             bugs.ExpectedResult = model.ExpectedResult;
             bugs.RealityResult = model.RealityResult;
             bugs.Status = model.Status;
             bugs.OptionalInformation = model.OptionalInformation;
 
-            db.Entry(bugs).State = System.Data.Entity.EntityState.Modified;
+            db.Entry(bugs).State = System.Data.Entity.EntityState.Modified; //Possiblly not needed because Entity Framework does it automatically. Could just modify then save
+            project.DateModified = DateTime.UtcNow;
             db.SaveChanges();
 
             
@@ -436,10 +441,12 @@ namespace BugTracker.Controllers
         public ActionResult BugDelete(int id, int bug, string categoryval = "", string propertyval = "", string orderval = "")
         {
             ApplicationDbContext db = new ApplicationDbContext();
+            Project project = db.Projects.Find(id);
             var toRemove = db.Projects.Find(id).GetBugs.Where(n => n.ID == bug).FirstOrDefault();
             if(toRemove != null)
             {
                 db.Entry(toRemove).State = System.Data.Entity.EntityState.Deleted;
+                project.DateModified = DateTime.UtcNow;
                 db.SaveChanges();
                 return RedirectToAction("Project", new { id, categoryval, propertyval, orderval }); //placeholder
             }

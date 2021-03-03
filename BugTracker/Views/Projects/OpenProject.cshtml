@@ -4,13 +4,13 @@
 @{
     //Layout = "~/Views/Shared/_Layout.cshtml";
 
-    ViewBag.Title = "BuggyBoy - OpenProject";
+    ViewBag.Title = "OpenProject - BuggyBoy";
 
 }
 <title>@ViewBag.Title</title>
 
 
-<div class="container " id="projectList">
+<div class="container pb-5" id="projectList">
     <div class="row">
         <div class="col-12" id="Header">
             <h1 class="m-0">Projects</h1>
@@ -23,75 +23,209 @@
     <div id="pager">
         @Html.PagedListPager(Model.PageData, Page => Url.Action("OpenProject", new { Page }), new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded })
     </div>
-
-    <table class="table table-hover shadow-lg" id="content">
-        <thead>
-            <tr class="d-flex">
-                <th class="col-10 headerClass align-self-stretch" scope="col"></th>
-                <th class="col-1 headerClass align-self-stretch" scope="col">Date Created</th>
-                <th class="col-1 headerClass align-self-stretch" scope="col">Delete</th>
-            </tr>
-        </thead>
-        @if (Model.PageData.Count > 0)
-        {
-            <tbody>
-                @foreach (var project in Model.PageData)
-                {
-                    using (Html.BeginForm("DeleteProject", "Projects", new { id = project.ID }, FormMethod.Post, new { @class = "delete" }))
+    <div class="table-responsive table-hover shadow-lg">
+        <table class="table m-0" id="content">
+            <thead>
+                <tr class="my-auto">
+                    <th class="col headerClass" scope="col" style="font-size: 18px;">Project Name</th>
+                    <th class="col headerClass text-center" scope="col" style="font-size: 18px;">Date Modified</th>
+                    <th class="col headerClass text-center" scope="col" style="font-size: 18px;">Date Created</th>
+                    <th class="col headerClass text-center" scope="col" style="font-size: 18px;">Delete</th>
+                </tr>
+            </thead>
+            @if (Model.PageData.Count > 0)
+            {
+                <tbody>
+                    @foreach (var project in Model.PageData)
                     {
-                        @Html.AntiForgeryToken()
-                        <tr class="d-flex" id="cells">
-                            <td class="col-10">
-                                @Html.ActionLink(project.ProjectName, "Project", "Projects", new { id = project.ID }, new
-                           { style = "text-decoration:none; color:black;", @class = "blockContainer" })
-                            </td>
-                            <td class="col-1">
 
-                                <i>@project.DateCreated.Date.ToShortDateString()</i>
-                            </td>
-                            <td class="col-1">
-                                <button class="btn p-0" type="button" id="DeleteProject-@project.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteProject-@project.ID" aria-hidden="false">
-                                    <i class="far fa-trash-alt fa-lg"></i>
-                                </button>
 
-                                <div class="modal fade" id="deleteProject-@project.ID" aria-labelledby="DeleteProject-@project.ID" tabindex="-1" role="dialog" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header text-center">
-                                                <h4 class="modal-title w-100"><strong>Delete Project?</strong></h4>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>Are you sure you wish to delete this project?<strong style="color:red;"> This action cannot be undone.</strong></p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button class="btn close mr-auto" type="button" style="font-size:16px;" data-dismiss="modal">Cancel</button>
-                                                <button class="btn btn-danger ml-auto" type="submit" value="Delete">Delete</button>
+
+                        using (Html.BeginForm("DeleteProject", "Projects", new { id = project.ID }, FormMethod.Post, new { @class = "delete" }))
+                        {
+
+
+                            @Html.AntiForgeryToken()
+                            <tr id="cells">
+                                @{
+                                    var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                                    var timeCreated = project.DateCreated + utcOffset;
+                                    var timeModified = project.DateModified + utcOffset;
+                                }
+
+                                <td class="redirect col my-auto" onclick="window.location.href = '@Url.Action("Project", "Projects", new { id = project.ID })'">
+                                    <span>@project.ProjectName</span>
+                                </td>
+                                <td class="col text-center">
+                                    <span>@timeModified.ToShortDateString()</span>
+                                    <span>@timeModified.ToShortTimeString()</span>
+
+                                </td>
+                                <td class="col text-center">
+                                    <span>@timeCreated.ToShortDateString()</span>
+
+                                </td>
+                                <td class="col text-center">
+                                    <button class="btn p-0" type="button" id="DeleteProject-@project.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteProject-@project.ID" aria-hidden="false">
+                                        <i class="far fa-trash-alt fa-lg"></i>
+                                    </button>
+
+                                    <div class="modal fade" id="deleteProject-@project.ID" aria-labelledby="DeleteProject-@project.ID" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h4 class="modal-title w-100"><strong>Delete Project?</strong></h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you wish to delete this project?<strong style="color:red;"> This action cannot be undone.</strong></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn close mr-auto" type="button" style="font-size:16px;" data-dismiss="modal">Cancel</button>
+                                                    <button class="btn btn-danger ml-auto" type="submit" value="Delete">Delete</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
 
+                        }
                     }
-                }
-            </tbody>
-        }
-        else
-        {
-            <tbody>
-                <tr class="d-flex " id="cells">
-                    <td class="col-12 text-center text-muted">
-                        <div class="blockContainer">
-                            <p class="m-0">NO PROJECTS FOUND</p>
-                        </div>
-                    </td>
+                </tbody>
+            }
+            else
+            {
+                <tbody>
+                    <tr id="cells">
+                        <td class="col text-muted">
+                            <div class="blockContainer">
+                                <p class="m-0">NO PROJECTS FOUND</p>
+                            </div>
+                        </td>
+                        <td class="col text-center text-muted">
+                            <div class="blockContainer">
+                                <p class="m-0">N/A</p>
+                            </div>
+                        </td>
+                        <td class="col text-center text-muted">
+                            <div class="blockContainer">
+                                <p class="m-0">N/A</p>
+                            </div>
+                        </td>
+                        <td class="col text-center text-muted">
+                            <div class="blockContainer">
+                                <p class="m-0">N/A</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            }
+        </table>
+    </div>
+    
 
+    @*<table class="table table-hover shadow-lg" id="content">
+            <thead>
+                <tr class="d-flex">
+                    <th class="col-lg-9 col-sm-6 headerClass align-self-stretch" scope="col"></th>
+                    <th class="col-lg-1 col-sm-2 headerClass align-self-stretch" scope="col">Date Modified</th>
+                    <th class="col-lg-1 col-sm-2 headerClass align-self-stretch" scope="col">Date Created</th>
+                    <th class="col-lg-1 col-sm-2 headerClass align-self-stretch" scope="col">Delete</th>
                 </tr>
-            </tbody>
-        }
-    </table>
+            </thead>
+            @if (Model.PageData.Count > 0)
+            {
+                <tbody>
+                    @foreach (var project in Model.PageData)
+                    {
+
+
+
+                        using (Html.BeginForm("DeleteProject", "Projects", new { id = project.ID }, FormMethod.Post, new { @class = "delete" }))
+                        {
+
+
+                            @Html.AntiForgeryToken()
+                            <tr class="d-flex" id="cells">
+                                @{
+                                    var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                                    var timeCreated = project.DateCreated + utcOffset;
+                                    var timeModified = project.DateModified + utcOffset;
+                                }
+
+                                <td class="col-lg-9 col-sm-6">
+                                    @Html.ActionLink(project.ProjectName, "Project", "Projects", new { id = project.ID }, new
+                               { style = "text-decoration:none; color:black;", @class = "blockContainer" })
+                                </td>
+                                <td class="col-lg-1 col-sm-2">
+                                    <i>@timeModified.ToString()</i>
+
+                                </td>
+                                <td class="col-lg-1 col-sm-2">
+                                    <i>@timeCreated.ToString()</i>
+
+                                </td>
+                                <td class="col-lg-1 col-sm-2">
+                                    <button class="btn p-0" type="button" id="DeleteProject-@project.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteProject-@project.ID" aria-hidden="false">
+                                        <i class="far fa-trash-alt fa-lg"></i>
+                                    </button>
+
+                                    <div class="modal fade" id="deleteProject-@project.ID" aria-labelledby="DeleteProject-@project.ID" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h4 class="modal-title w-100"><strong>Delete Project?</strong></h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you wish to delete this project?<strong style="color:red;"> This action cannot be undone.</strong></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn close mr-auto" type="button" style="font-size:16px;" data-dismiss="modal">Cancel</button>
+                                                    <button class="btn btn-danger ml-auto" type="submit" value="Delete">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        }
+                    }
+                </tbody>
+            }
+            else
+            {
+                <tbody>
+                    <tr class="d-flex " id="cells">
+                        <td class="col-12 text-center text-muted">
+                            <div class="blockContainer">
+                                <p class="m-0">NO PROJECTS FOUND</p>
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
+            }
+        </table>*@
 </div>
+
+@section scripts{
+   @*<script>
+       $(function () {
+           $('.redirect').on('click', function () {
+               var projectID = $(this).data("projectid");
+               window.location.href = ''
+           });
+       });
+    </script>*@ 
+}
+
+@section footer{
+    @{Html.RenderPartial("_Footer");}
+}

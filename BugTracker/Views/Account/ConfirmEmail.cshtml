@@ -1,10 +1,23 @@
 ﻿@{
-    ViewBag.Title = "Confirm Email";
+    Layout = null;
+    ViewBag.Title = "Email Confirmation";
 }
 
 <h2>@ViewBag.Title.</h2>
-<div>
-    <p>
-        Thank you for confirming your email. Please @Html.ActionLink("Click here to Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
-    </p>
-</div>
+@if (ViewBag.boolean == false)
+{
+    <div>
+        <p>
+            Thank you for confirming your email. Please @Html.ActionLink("Click here to Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+        </p>
+    </div>
+}
+else
+{
+    <div>
+        <p>
+            This email is already confirmed. Please @Html.ActionLink("Click here to Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+        </p>
+    </div>
+}
+

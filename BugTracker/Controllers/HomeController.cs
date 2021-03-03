@@ -14,7 +14,7 @@ namespace BugTracker.Controllers
         {
             return View();
         }
-
+        [AllowAnonymous]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
@@ -22,11 +22,19 @@ namespace BugTracker.Controllers
             return View();
         }
 
-        public ActionResult Contact()
+        [AllowAnonymous]
+        public ActionResult PrivacyPolicy()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Your Privacy Policy page.";
 
             return View();
         }
+
+        //public ActionResult Contact()
+        //{
+        //    ViewBag.Message = "Your contact page.";
+
+        //    return View();
+        //}
     }
 }
