@@ -51,23 +51,6 @@ namespace BugTracker.Models
                 .WithRequired()
                 .WillCascadeOnDelete(true);
 
-
-            //modelBuilder.Entity<Project>()
-            //    .HasRequired(s => s.ApplicationUserID)
-            //    .WithMany()
-            //    .HasForeignKey(a => a.ApplicationUserID)
-            //    .WillCascadeOnDelete(true);
-
-
-            //modelBuilder.Entity<IdentityUser>()
-            //    .ha(a => a.)
-            //    .WithMany(b => b.GetBugs)
-            //    .
-
-            //modelBuilder.Entity<Project>()
-            //    .HasMany(b => b.GetBugs)
-            //    .WithRequired(s => s.Project)
-            //    .WillCascadeOnDelete(true);
         }
     }
 }
