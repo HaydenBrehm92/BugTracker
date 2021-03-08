@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic;
+using System.Linq.Dynamic.Core;
 using System.Web;
 using System.Web.Mvc;
 using BugTracker.Models;
@@ -10,6 +12,21 @@ using PagedList;
 
 namespace BugTracker.Controllers
 {
+    public static class Extensions
+    {
+        // SORT BY CATEGORY
+        public static IQueryable<BugProperties> Sort(this IQueryable<BugProperties> source, Category category, string property, string order)
+        {
+            return source.Where("Category = @0", category).OrderBy(property + (order == "Descend" ? " descending" : ""));
+        }
+
+        // SORT ALL CARDS IN PROJECT
+        public static IQueryable<BugProperties> SortAll(this IQueryable<BugProperties> source, string property, string order)
+        {
+            return source.OrderBy(property + (order == "Descend" ? " descending" : ""));
+        }
+    }
+
     [Authorize]
     public class ProjectsController : Controller
     {
@@ -18,13 +35,6 @@ namespace BugTracker.Controllers
         {
             return View();
         }
-
-        // Get
-        // Home/CreateProject
-        //public ActionResult CreateProject()
-        //{
-        //    return PartialView("~/Views/Projects/CreateProject.cshtml");
-        //}
 
         //Post
         // Home/CreateProject
@@ -43,15 +53,15 @@ namespace BugTracker.Controllers
             item.GetBugs = new List<BugProperties>();
             item.ProjectName = model.ProjectName;
             item.ApplicationUserID = User.Identity.GetUserId();
-            item.DateCreated = DateTime.UtcNow; //Will NOT be showing this
-            item.DateModified = DateTime.UtcNow; //I want to show this
+            item.DateCreated = DateTime.UtcNow;
+            item.DateModified = DateTime.UtcNow;
 
             db.Projects.Add(item);
             db.SaveChanges();
 
             var id = item.ID;
 
-            return RedirectToAction("Project", new { id });  //return view with blank project template **Placeholder**
+            return RedirectToAction("Project", new { id });
         }
 
         //order by most recently modified
@@ -62,7 +72,7 @@ namespace BugTracker.Controllers
             ApplicationDbContext db = new ApplicationDbContext();
             string currentId = User.Identity.GetUserId();
             int pageSize = 10;
-            int pageNumber = (page ?? 1); //need to change possible for initial page create
+            int pageNumber = (page ?? 1);
             var model = new ProjectViewModel()
             {
                 Page = page,
@@ -99,7 +109,7 @@ namespace BugTracker.Controllers
             }
             else
             {
-                //default
+                // DEFAULT
                 if(categoryval == "" || propertyval == "" || orderval == "")
                 {
                     var model = new BugViewModel()
@@ -117,239 +127,66 @@ namespace BugTracker.Controllers
                 }
                 else
                 {
-                    //Very bad idea, refactor later for switch statement
-                    var model = new BugViewModel();
-                    model.Project = project;
-                    switch (categoryval)
+                    // SORT BASED ON USER INPUT FIELDS
+                    var model = new BugViewModel() { Project = project};
+                    if (categoryval != "All")
                     {
-                        case ("All"):
-                            if (propertyval == "Description" && orderval == "Ascend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderBy(m => m.Description).ToList();
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderBy(m => m.Description).ToList();
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderBy(m => m.Description).ToList();
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderBy(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Description" && orderval == "Descend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderByDescending(m => m.Description).ToList();
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderByDescending(m => m.Description).ToList();
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderByDescending(m => m.Description).ToList();
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderByDescending(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Ascend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderBy(m => m.Status).ToList();
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderBy(m => m.Status).ToList();
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderBy(m => m.Status).ToList();
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderBy(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Descend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderByDescending(m => m.Status).ToList();
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderByDescending(m => m.Status).ToList();
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderByDescending(m => m.Status).ToList();
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderByDescending(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Ascend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderBy(m => m.DateModified).ToList();
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderBy(m => m.DateModified).ToList();
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderBy(m => m.DateModified).ToList();
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderBy(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Descend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderByDescending(m => m.DateModified).ToList();
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderByDescending(m => m.DateModified).ToList();
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderByDescending(m => m.DateModified).ToList();
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderByDescending(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Ascend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderBy(m => m.DateCreated).ToList();
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderBy(m => m.DateCreated).ToList();
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderBy(m => m.DateCreated).ToList();
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderBy(m => m.DateCreated).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Descend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderByDescending(m => m.DateCreated).ToList();
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderByDescending(m => m.DateCreated).ToList();
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderByDescending(m => m.DateCreated).ToList();
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderByDescending(m => m.DateCreated).ToList();
-                            }
-                            model.categoryval = categoryval;
-                            model.propertyval = propertyval;
-                            model.orderval = orderval;
-                            break;
-                        case ("Bugs"):
-                            if(propertyval == "Description" && orderval == "Ascend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderBy(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Description" && orderval == "Descend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderByDescending(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Ascend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderBy(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Descend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderByDescending(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Ascend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderBy(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Descend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderByDescending(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Ascend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderBy(m => m.DateCreated).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Descend")
-                            {
-                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).OrderByDescending(m => m.DateCreated).ToList();
-                            }
-                            model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).ToList();
-                            model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).ToList();
-                            model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).ToList();
-                            model.categoryval = categoryval;
-                            model.propertyval = propertyval;
-                            model.orderval = orderval;
-                            break;
-                        case ("In Progress"):
-                            if (propertyval == "Description" && orderval == "Ascend")
-                            {
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderBy(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Description" && orderval == "Descend")
-                            {
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderByDescending(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Ascend")
-                            {
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderBy(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Descend")
-                            {
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderByDescending(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Ascend")
-                            {
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderBy(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Descend")
-                            {
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderByDescending(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Ascend")
-                            {
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderBy(m => m.DateCreated).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Descend")
-                            {
-                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).OrderByDescending(m => m.DateCreated).ToList();
-                            }
-                            model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).ToList();
-                            model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).ToList();
-                            model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).ToList();
-                            model.categoryval = categoryval;
-                            model.propertyval = propertyval;
-                            model.orderval = orderval;
-                            break;
-                        case ("Testing"):
-                            if (propertyval == "Description" && orderval == "Ascend")
-                            {
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderBy(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Description" && orderval == "Descend")
-                            {
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderByDescending(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Ascend")
-                            {
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderBy(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Descend")
-                            {
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderByDescending(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Ascend")
-                            {
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderBy(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Descend")
-                            {
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderByDescending(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Ascend")
-                            {
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderBy(m => m.DateCreated).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Descend")
-                            {
-                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).OrderByDescending(m => m.DateCreated).ToList();
-                            }
-                            model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).ToList();
-                            model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).ToList();
-                            model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).ToList();
-                            model.categoryval = categoryval;
-                            model.propertyval = propertyval;
-                            model.orderval = orderval;
-                            break;
-                        case ("Completed"):
-                            if (propertyval == "Description" && orderval == "Ascend")
-                            {
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderBy(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Description" && orderval == "Descend")
-                            {
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderByDescending(m => m.Description).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Ascend")
-                            {
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderBy(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Status" && orderval == "Descend")
-                            {
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderByDescending(m => m.Status).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Ascend")
-                            {
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderBy(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Modified" && orderval == "Descend")
-                            {
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderByDescending(m => m.DateModified).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Ascend")
-                            {
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderBy(m => m.DateCreated).ToList();
-                            }
-                            if (propertyval == "Created" && orderval == "Descend")
-                            {
-                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).OrderByDescending(m => m.DateCreated).ToList();
-                            }
-                            model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).ToList();
-                            model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).ToList();
-                            model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).ToList();
-                            model.categoryval = categoryval;
-                            model.propertyval = propertyval;
-                            model.orderval = orderval;
-                            break;
+                        Category currentCategory = 0;
+                        // Not the best implementation but much better than it used to be.
+                        switch (categoryval)
+                        {
+                            case "Bugs":
+                                currentCategory = Category.NoCategory;
+                                // BUGVIEWMODEL
+                                model.Bug = project.GetBugs.AsQueryable().Sort(currentCategory, propertyval, orderval).ToList();
+                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).ToList();
+                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).ToList();
+                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).ToList();
+                                break;
+                            case "In Progress":
+                                currentCategory = Category.InProgress;
+                                // BUGVIEWMODEL
+                                model.InProgress = project.GetBugs.AsQueryable().Sort(currentCategory, propertyval, orderval).ToList();
+                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).ToList();
+                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Testing).ToList();
+                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).ToList();
+                                break;
+                            case "Testing":
+                                currentCategory = Category.Testing;
+                                // BUGVIEWMODEL
+                                model.Testing = project.GetBugs.AsQueryable().Sort(currentCategory, propertyval, orderval).ToList();
+                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).ToList();
+                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).ToList();
+                                model.Completed = project.GetBugs.Where(m => m.Category == Category.Complete).ToList();
+                                break;
+                            case "Completed":
+                                currentCategory = Category.Complete;
+                                // BUGVIEWMODEL
+                                model.Completed = project.GetBugs.AsQueryable().Sort(currentCategory, propertyval, orderval).ToList();
+                                model.Bug = project.GetBugs.Where(m => m.Category == Category.NoCategory).ToList();
+                                model.InProgress = project.GetBugs.Where(m => m.Category == Category.InProgress).ToList();
+                                model.Testing = project.GetBugs.Where(m => m.Category == Category.Complete).ToList();
+                                break;
+                        };
+                    }
+                    else
+                    {
+                        model.Project.GetBugs = project.GetBugs.AsQueryable().SortAll(propertyval, orderval).ToList();
+
+                        // BUGVIEWMODEL 
+                        model.Bug = model.Project.GetBugs.Where(m => m.Category == Category.NoCategory).ToList();
+                        model.InProgress = model.Project.GetBugs.Where(m => m.Category == Category.InProgress).ToList();
+                        model.Testing = model.Project.GetBugs.Where(m => m.Category == Category.Testing).ToList();
+                        model.Completed = model.Project.GetBugs.Where(m => m.Category == Category.Complete).ToList();
                     }
 
-                    return View(model);
-                }
-                
-            }
+                    model.categoryval = categoryval;
+                    model.propertyval = propertyval;
+                    model.orderval = orderval;
 
+                    return View(model);
+                }     
+            }
         }
 
         //Create Bug
@@ -394,16 +231,6 @@ namespace BugTracker.Controllers
             return RedirectToAction("Project", new { id, categoryval, propertyval, orderval });
         }
 
-        // Read Bug
-        // Maybe in the future
-        //public ActionResult BugDetails(int id, int bug)
-        //{
-        //    ApplicationDbContext db = new ApplicationDbContext();
-        //    var bugs = db.Projects.Find(id).GetBugs.Where(n => n.ID == bug).FirstOrDefault();
-
-        //    return View("Project", bugs);    //placeholder (expand in view or new view)
-        //}
-
         // Edit Bug
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -429,8 +256,6 @@ namespace BugTracker.Controllers
             db.Entry(bugs).State = System.Data.Entity.EntityState.Modified; //Possiblly not needed because Entity Framework does it automatically. Could just modify then save
             project.DateModified = DateTime.UtcNow;
             db.SaveChanges();
-
-            
 
             return RedirectToAction("Project", new { id, categoryval, propertyval, orderval }); 
         }
@@ -462,5 +287,5 @@ namespace BugTracker.Controllers
             ApplicationDbContext db = new ApplicationDbContext();
             return Json(!db.Projects.Any(s => s.ProjectName == ProjectName && s.ApplicationUserID == id), JsonRequestBehavior.AllowGet);
         }
-    }
+    }  
 }
