@@ -59,46 +59,6 @@
                 manager.Create(user);
                 manager.AddToRole(user.Id, "Admin");
             }
-
-
-
-            //var user = new IdentityUser
-            //{
-            //    UserName = "haydenbrehm92@gmail.com",
-            //    SecurityStamp = Guid.NewGuid().ToString(),
-            //    PasswordHash = password,
-            //    Email = "haydenbrehm92@gmail.com",
-            //    LockoutEnabled = true
-
-            //};
-
-            //var rolechoice = new IdentityRole("Admin");
-
-
-            //context.Users.AddOrUpdate(u => u.UserName, new ApplicationUser
-            //{
-            
-            
-            //    UserName = "haydenbrehm92@gmail.com",
-            //    SecurityStamp = Guid.NewGuid().ToString(),
-            //    PasswordHash = password,
-            //    Email = "haydenbrehm92@gmail.com",
-            //    LockoutEnabled = true
-            
-            
-            //});
-            
-            //context.Roles.AddOrUpdate(new IdentityRole
-            //{
-            //    Id = "1",
-            //    Name = "Admin"
-            //});
-            //context.SaveChanges();
-
-            //var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
-            //manager.AddToRole(user.Id, "Admin");
-            
-            
         }
     }
 }
