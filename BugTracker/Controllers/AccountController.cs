@@ -192,7 +192,8 @@ namespace BugTracker.Controllers
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>. " +
                         "Don't know why you are receiving this email? This email is automated and may have been sent in error.");
 
-                    manager.AddToRole(user.Id, "User");
+                    
+                    await manager.AddToRoleAsync(user.Id, "User");  //this does not work
 
                     return RedirectToAction("Login");
                 }

@@ -24,29 +24,27 @@
 
             var pwHash = new PasswordHasher();
             string password = pwHash.HashPassword("Gamegrumps5!");
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
 
-            if(!context.Roles.Any(r => r.Name == "Admin"))
+            bool adminResult = roleManager.RoleExists("Admin");
+            if(!adminResult)
             {
-                var store = new RoleStore<IdentityRole>(context);
-                var manager = new RoleManager<IdentityRole>(store);
-                var role = new IdentityRole { Id = "1", Name = "Admin" };
-
-                manager.Create(role);
+                roleManager.Create(new IdentityRole("Admin"));
             }
 
-            if(!context.Roles.Any(r => r.Name == "User"))
+            bool userResult = roleManager.RoleExists("User");
+            if(!userResult)
             {
-                var store = new RoleStore<IdentityRole>(context);
-                var manager = new RoleManager<IdentityRole>(store);
-                var role = new IdentityRole { Id = "2", Name = "User" };
-                manager.Create(role);
+                roleManager.Create(new IdentityRole("User"));
             }
 
-            if(!context.Users.Any(u => u.UserName == "haydenbrehm92@gmail.com"))
+            var userStore = new UserStore<ApplicationUser>(context);
+            var userManager = new UserManager<ApplicationUser>(userStore);
+            var adminUser = userManager.FindByName("haydenbrehm92@gmail.com");
+            if(adminUser == null)
             {
-                var store = new UserStore<ApplicationUser>(context);
-                var manager = new UserManager<ApplicationUser>(store);
-                var user = new ApplicationUser
+                var newUser = new ApplicationUser
                 {
                     UserName = "haydenbrehm92@gmail.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
@@ -55,10 +53,52 @@
                     LockoutEnabled = true,
                     EmailConfirmed = true
                 };
-
-                manager.Create(user);
-                manager.AddToRole(user.Id, "Admin");
+                var createResult = userManager.Create(newUser);
+                if (createResult.Succeeded)
+                {
+                    userManager.AddToRole(newUser.Id, "Admin");
+                }
             }
+            
+            if(!userManager.IsInRole(adminUser.Id, "Admin"))
+            {
+                userManager.AddToRole(adminUser.Id, "Admin");
+            }
+
+            //if(!context.Roles.Any(r => r.Name == "Admin"))
+            //{
+            //    //var store = new RoleStore<IdentityRole>(context);
+            //    //var manager = new RoleManager<IdentityRole>(store);
+            //    var role = new IdentityRole { Id = "1", Name = "Admin" };
+
+            //    manager.Create(role);
+            //}
+
+            //if(!context.Roles.Any(r => r.Name == "User"))
+            //{
+            //    var store = new RoleStore<IdentityRole>(context);
+            //    var manager = new RoleManager<IdentityRole>(store);
+            //    var role = new IdentityRole { Id = "2", Name = "User" };
+            //    manager.Create(role);
+            //}
+
+            //if(!context.Users.Any(u => u.UserName == "haydenbrehm92@gmail.com"))
+            //{
+            //    var store = new UserStore<ApplicationUser>(context);
+            //    var manager = new UserManager<ApplicationUser>(store);
+            //    var user = new ApplicationUser
+            //    {
+            //        UserName = "haydenbrehm92@gmail.com",
+            //        SecurityStamp = Guid.NewGuid().ToString(),
+            //        PasswordHash = password,
+            //        Email = "haydenbrehm92@gmail.com",
+            //        LockoutEnabled = true,
+            //        EmailConfirmed = true
+            //    };
+
+            //    manager.Create(user);
+            //    manager.AddToRole(user.Id, "Admin");
+            //}
         }
     }
 }
