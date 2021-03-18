@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using BugTracker.Models;
 using Microsoft.AspNet.Identity;
 using PagedList;
+using Newtonsoft.Json;
 
 namespace BugTracker.Controllers
 {
@@ -287,5 +288,52 @@ namespace BugTracker.Controllers
             ApplicationDbContext db = new ApplicationDbContext();
             return Json(!db.Projects.Any(s => s.ProjectName == ProjectName && s.ApplicationUserID == id), JsonRequestBehavior.AllowGet);
         }
-    }  
+
+        [HttpPost]
+        public JsonResult OpenProjectConvertUtcToLocal(string timezone)
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+            
+            var dates = new List<object>();
+            string id = User.Identity.GetUserId();
+            var projectsList = context.Projects.Where(s => s.ApplicationUserID == id).Select(d => new {id = d.ID, created = d.DateCreated, modified = d.DateModified}).OrderByDescending(t => t.modified).ToList(); //grab all projects' dates
+            timezone = TimeZoneInfo.Local.ToSerializedString();
+            TimeZoneInfo zoneInfo = TimeZoneInfo.FromSerializedString(timezone);
+
+            foreach (var project in projectsList)
+            {
+                var created = TimeZoneInfo.ConvertTimeFromUtc(project.created, zoneInfo);   //convert date created
+                var modified = TimeZoneInfo.ConvertTimeFromUtc(project.modified, zoneInfo); //convert date modified
+                dates.Add(new { project.id, CreatedDate = created, ModifiedDate = modified });
+            }
+            
+            return Json(dates, "application/json");
+        }
+
+        [HttpPost]
+        public JsonResult BugConvertUtcToLocal(string timezone, int projectid)
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            var dates = new List<object>();
+            string id = User.Identity.GetUserId();
+            if(!context.Projects.Any(s => s.ApplicationUserID == id && s.ID == projectid))
+            {
+                Response.StatusCode = 404;
+                return Json("Error");
+            }
+            var bugList = context.Projects.Find(projectid).GetBugs.Select(b => new { id = b.ID, created = b.DateCreated, modified = b.DateModified }).ToList(); //grab all bugs' dates
+            timezone = TimeZoneInfo.Local.ToSerializedString();
+            TimeZoneInfo zoneInfo = TimeZoneInfo.FromSerializedString(timezone);
+
+            foreach (var project in bugList)
+            {
+                var created = TimeZoneInfo.ConvertTimeFromUtc(project.created, zoneInfo);   //convert date created
+                var modified = TimeZoneInfo.ConvertTimeFromUtc(project.modified, zoneInfo); //convert date modified
+                dates.Add(new { project.id, CreatedDate = created, ModifiedDate = modified });
+            }
+
+            return Json(dates, "application/json");
+        }
+    } 
 }

@@ -18,6 +18,7 @@ html, body {
 
 body{
     padding-top:65px;
+    margin-bottom:60px;
 }
 
 /*CURRENT*/
@@ -51,6 +52,8 @@ body{
 }*/
 #renderbody {
     min-height: 100%;
+    height:auto !important;
+    height: 100%; 
     
     position: relative;
     background-color: whitesmoke;

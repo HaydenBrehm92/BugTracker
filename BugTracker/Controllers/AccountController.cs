@@ -61,6 +61,7 @@ namespace BugTracker.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            ViewBag.Message = TempData["Message"];
             return View();
         }
 
@@ -82,21 +83,21 @@ namespace BugTracker.Controllers
                 if(!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
                     ModelState.AddModelError("", "You need a confirmed email address to log in. Check the email account you used to register.");
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id, "Please Confirm your account", "You cannot login until your account is confirmed. Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>." +
-                        "Don't know why you are receiving this email? This email is automated and may have been sent in error.");
+                    //string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    //await UserManager.SendEmailAsync(user.Id, "Please Confirm your account", "You cannot login until your account is confirmed. Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>." +
+                    //    "Don't know why you are receiving this email? This email is automated and may have been sent in error.");
                     return View("Login", model);
                 }
             }
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
 
             //insert logic for rememberme and persistent cookies. Need expiration time to work and redirect back to login if user tries to 
             //use [Authorized] without a valid cookie
-
+            
 
             switch (result)
             {
@@ -173,8 +174,8 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email }; 
+                var result = await UserManager.CreateAsync(user, model.Password);  
 
                 var context = new ApplicationDbContext();
                 var store = new UserStore<ApplicationUser>(context);
@@ -194,7 +195,7 @@ namespace BugTracker.Controllers
 
                     
                     await manager.AddToRoleAsync(user.Id, "User");  //this does not work
-
+                    TempData["Message"] = "Confirmation Email Sent To Provided Email Address. Your Email Provider May Mark It As Spam.";
                     return RedirectToAction("Login");
                 }
                 AddErrors(result);
@@ -478,6 +479,14 @@ namespace BugTracker.Controllers
                 return HttpContext.GetOwinContext().Authentication;
             }
         }
+
+        //private async void ResendEmailConfirmation(ApplicationUser user)
+        //{
+        //    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+        //    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+        //    await UserManager.SendEmailAsync(user.Id, "Please Confirm your account", "You cannot login until your account is confirmed. Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>." +
+        //        "Don't know why you are receiving this email? This email is automated and may have been sent in error.");
+        //}
 
         private void AddErrors(IdentityResult result)
         {

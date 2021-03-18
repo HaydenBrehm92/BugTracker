@@ -12,10 +12,14 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using BugTracker.Models;
 using System.Net.Mail;
+using Mailjet.Client;
+using Mailjet.Client.Resources;
 using System.Net;
 using System.Text;
 using System.Net.Configuration;
 using System.Configuration;
+using Newtonsoft.Json.Linq;
+using Mailjet.Client.TransactionalEmails;
 
 namespace BugTracker
 {
@@ -23,26 +27,53 @@ namespace BugTracker
     {
         public async Task SendAsync(IdentityMessage message)
         {
+            // Following with MailJet API Documentation https://github.com/mailjet/mailjet-apiv3-dotnet for a simple email
+            MailjetClient client = new MailjetClient("fbd5291bd68ff822ba83c14ef2e1911b", "5eae6a21c963041ddbf15bd8c3bc2a5b");
+
+            MailjetRequest request = new MailjetRequest // Not needed for a simple send email. Used for Get/Put/Delete/Post api calls
+            {
+                Resource = Send.Resource,
+            };
+            
+            // Email Message
+            var email = new TransactionalEmailBuilder()
+                .WithFrom(new SendContact("noreply@buggyboy.dev"))
+                .WithSubject(message.Subject)
+                .WithHtmlPart(message.Body)
+                .WithTo(new SendContact(message.Destination))
+                .Build();
+
+            await client.SendTransactionalEmailAsync(email);
+
+            
 
             // Plug in your email service here to send an email.
-            SmtpSection smtpSection = (SmtpSection)ConfigurationManager.GetSection("system.net/mailSettings/smtp");
-            using(MailMessage mailMessage = new MailMessage())
-            {
-                mailMessage.From = new MailAddress(smtpSection.From);
-                mailMessage.To.Add(message.Destination);
-                mailMessage.Subject = message.Subject;
-                mailMessage.IsBodyHtml = true;
-                mailMessage.Body = message.Body;
+            //SmtpSection smtpSection = (SmtpSection)ConfigurationManager.GetSection("system.net/mailSettings/smtp");
+            //using(MailMessage mailMessage = new MailMessage())
+            //{
+            //    mailMessage.From = new MailAddress(smtpSection.From);
+            //    mailMessage.To.Add(message.Destination);
+            //    mailMessage.Subject = message.Subject;
+            //    mailMessage.IsBodyHtml = true;
+            //    mailMessage.Body = message.Body;
 
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = smtpSection.Network.Host;
-                smtp.EnableSsl = smtpSection.Network.EnableSsl;
-                NetworkCredential networkCredential = new NetworkCredential(smtpSection.Network.UserName, smtpSection.Network.Password);
-                smtp.UseDefaultCredentials = true;
-                smtp.Credentials = networkCredential;
-                smtp.Port = smtpSection.Network.Port;
-                await smtp.SendMailAsync(mailMessage);
-            }
+            //    SmtpClient smtp = new SmtpClient();
+            //    smtp.DeliveryMethod = smtpSection.DeliveryMethod;
+            //    smtp.Host = smtpSection.Network.Host;
+            //    smtp.EnableSsl = smtpSection.Network.EnableSsl;
+            //    smtp.UseDefaultCredentials = false;
+            //    NetworkCredential networkCredential = new NetworkCredential(smtpSection.Network.UserName, smtpSection.Network.Password);
+            //    smtp.Credentials = networkCredential;
+            //    smtp.Port = smtpSection.Network.Port;
+            //    try
+            //    {
+            //        await smtp.SendMailAsync(mailMessage);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        throw ex;
+            //    }
+            //}
 
             //return Task.FromResult(0);
         }

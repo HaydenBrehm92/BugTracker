@@ -9,8 +9,13 @@
     ViewBag.orderval = Model.orderval;
 }
 
+@Scripts.Render("~/bundles/jquery")
+@if (Model.Project.GetBugs.Count > 0)
+{
+    @Scripts.Render("~/Scripts/custom/BugDateConversions.js")
+}
 
-
+<input type="hidden" id="viewbagid" data-value="@ViewBag.id" />
 <title>@ViewBag.Title</title>
 
 <style>
@@ -41,7 +46,7 @@
     }
 
     #searchContainer {
-        display:block;
+        display: block;
         position: relative;
         padding-left: 15px;
         padding-right: 15px;
@@ -49,7 +54,7 @@
 
     #search {
         background: #fff;
-        min-width:80px;
+        min-width: 80px;
         max-width: 75%;
         width: 100%;
         border-color: white;
@@ -188,7 +193,7 @@
 <div class="container-fluid pb-5" id="Project-Container">
     <div class="mt-1 mb-4 d-flex align-items-center flex-row">
         <div class="justify-content-start">
-            <h2 id="projectName" >
+            <h2 id="projectName">
                 @Model.Project.ProjectName
             </h2>
         </div>
@@ -340,7 +345,7 @@
                                             <div class="card-body">
                                                 <div class="d-flex mb-1">
                                                     <div class="btn-group ml-auto card-modifiers">
-                                                        <button class="btn p-0 btnclass mr-2" type="button" value="disabled" id="edit-card-@item.ID" >
+                                                        <button class="btn p-0 btnclass mr-2" type="button" value="disabled" id="edit-card-@item.ID">
                                                             <i class="fa fa-pencil-alt fa-lg" aria-hidden="false" data-toggle="tooltip" data-placement="bottom" title="Edit"></i>
                                                         </button>
                                                         <button class="btn p-0" type="button" id="DeleteBug-@item.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteBug-@item.ID" aria-hidden="false">
@@ -380,15 +385,15 @@
                                                 }
                                             </div>
                                         </div>
-                                        @{ 
-                                            var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
-                                            var timeCreated = item.DateCreated + utcOffset;
-                                            var timeModified = item.DateModified + utcOffset;
-                                        }
+                                        @*@{
+                                                var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                                                var timeCreated = item.DateCreated + utcOffset;
+                                                var timeModified = item.DateModified + utcOffset;
+                                            }*@
                                         <div class="card-footer">
-                                            <div class="d-flex">
-                                                <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @timeCreated.ToShortDateString()</p>
-                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @timeModified.ToString()</p>
+                                            <div class="d-flex" id="bugDates-@item.ID">
+                                                @*<p class="date-format font-italic mr-auto mb-0 text-muted">Created: @timeCreated.ToShortDateString()</p>
+                                                    <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @timeModified.ToString()</p>*@
                                             </div>
                                         </div>
                                     </div>
@@ -489,15 +494,15 @@
                                                 }
                                             </div>
                                         </div>
-                                        @{
-                                            var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
-                                            var timeCreated = item.DateCreated + utcOffset;
-                                            var timeModified = item.DateModified + utcOffset;
-                                        }
+                                        @*@{
+                                                var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                                                var timeCreated = item.DateCreated + utcOffset;
+                                                var timeModified = item.DateModified + utcOffset;
+                                            }*@
                                         <div class="card-footer">
-                                            <div class="d-flex">
-                                                <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @timeCreated.ToShortDateString()</p>
-                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @timeModified.ToString()</p>
+                                            <div class="d-flex" id="bugDates-@item.ID">
+                                                @*<p class="date-format font-italic mr-auto mb-0 text-muted">Created: @timeCreated.ToShortDateString()</p>
+                                                    <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @timeModified.ToString()</p>*@
                                             </div>
                                         </div>
                                     </div>
@@ -596,15 +601,15 @@
                                                 }
                                             </div>
                                         </div>
-                                        @{
-                                            var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
-                                            var timeCreated = item.DateCreated + utcOffset;
-                                            var timeModified = item.DateModified + utcOffset;
-                                        }
+                                        @*@{
+                                                var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                                                var timeCreated = item.DateCreated + utcOffset;
+                                                var timeModified = item.DateModified + utcOffset;
+                                            }*@
                                         <div class="card-footer">
-                                            <div class="d-flex">
-                                                <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @timeCreated.ToShortDateString()</p>
-                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @timeModified.ToString()</p>
+                                            <div class="d-flex" id="bugDates-@item.ID">
+                                                @*<p class="date-format font-italic mr-auto mb-0 text-muted">Created: @timeCreated.ToShortDateString()</p>
+                                                    <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @timeModified.ToString()</p>*@
                                             </div>
                                         </div>
                                     </div>
@@ -704,15 +709,15 @@
                                                 }
                                             </div>
                                         </div>
-                                        @{
-                                            var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
-                                            var timeCreated = item.DateCreated + utcOffset;
-                                            var timeModified = item.DateModified + utcOffset;
-                                        }
+                                        @*@{
+                                                var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                                                var timeCreated = item.DateCreated + utcOffset;
+                                                var timeModified = item.DateModified + utcOffset;
+                                            }*@
                                         <div class="card-footer">
-                                            <div class="d-flex">
-                                                <p class="date-format font-italic mr-auto mb-0 text-muted">Created: @timeCreated.ToShortDateString()</p>
-                                                <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @timeModified.ToString()</p>
+                                            <div class="d-flex" id="bugDates-@item.ID">
+                                                @*<p class="date-format font-italic mr-auto mb-0 text-muted">Created: @timeCreated.ToShortDateString()</p>
+                                                    <p class="date-format font-italic ml-auto mb-0 text-muted">Modified: @timeModified.ToString()</p>*@
                                             </div>
                                         </div>
                                     </div>

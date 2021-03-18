@@ -5,6 +5,9 @@
   <Import Project="..\packages\EntityFramework.6.4.0\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <IgnoreDatabaseSettingOutOfSync>True</IgnoreDatabaseSettingOutOfSync>
+  </PropertyGroup>
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>
@@ -80,6 +83,9 @@
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Mailjet.Client, Version=2.0.1.0, Culture=neutral, PublicKeyToken=c297171c8bcce79f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mailjet.Api.2.0.1\lib\net45\Mailjet.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -260,8 +266,10 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="Scripts\custom\BugDateConversions.js" />
     <Content Include="Scripts\custom\editcardsScript.js" />
     <Content Include="Scripts\custom\layoutscript.js" />
+    <Content Include="Scripts\custom\OpenProjectDateConversions.js" />
     <Content Include="Scripts\custom\openprojectscript.js" />
     <Content Include="Scripts\custom\sortCardsScript.js" />
     <Content Include="Scripts\esm\popper-utils.js" />

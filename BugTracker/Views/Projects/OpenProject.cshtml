@@ -1,14 +1,21 @@
 ﻿@using BugTracker.Models
 @model ProjectViewModel
 @using PagedList.Mvc
+
 @{
     //Layout = "~/Views/Shared/_Layout.cshtml";
-
+    ViewBag.Timezone = "";
     ViewBag.Title = "OpenProject - BuggyBoy";
 
 }
-<title>@ViewBag.Title</title>
 
+@Scripts.Render("~/bundles/jquery")
+@if (Model.PageData.Count > 0)
+{
+    @Scripts.Render("~/Scripts/custom/OpenProjectDateConversions.js")
+}
+
+<title>@ViewBag.Title</title>
 
 <div class="container pb-5" id="projectList">
     <div class="row">
@@ -23,6 +30,7 @@
     <div id="pager">
         @Html.PagedListPager(Model.PageData, Page => Url.Action("OpenProject", new { Page }), new PagedListRenderOptions { Display = PagedListDisplayMode.IfNeeded })
     </div>
+
     <div class="table-responsive table-hover shadow-lg">
         <table class="table m-0" id="content">
             <thead>
@@ -35,6 +43,7 @@
             </thead>
             @if (Model.PageData.Count > 0)
             {
+
                 <tbody>
                     @foreach (var project in Model.PageData)
                     {
@@ -46,24 +55,14 @@
 
 
                             @Html.AntiForgeryToken()
-                            <tr id="cells">
-                                @{
-                                    var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
-                                    var timeCreated = project.DateCreated + utcOffset;
-                                    var timeModified = project.DateModified + utcOffset;
-                                }
 
+                            <tr id="cells">
                                 <td class="redirect col my-auto" onclick="window.location.href = '@Url.Action("Project", "Projects", new { id = project.ID })'">
                                     <span>@project.ProjectName</span>
                                 </td>
-                                <td class="col text-center">
-                                    <span>@timeModified.ToShortDateString()</span>
-                                    <span>@timeModified.ToShortTimeString()</span>
-
+                                <td class="col text-center" id="modifiedTD-@project.ID">
                                 </td>
-                                <td class="col text-center">
-                                    <span>@timeCreated.ToShortDateString()</span>
-
+                                <td class="col text-center" id="createdTD-@project.ID">
                                 </td>
                                 <td class="col text-center">
                                     <button class="btn p-0" type="button" id="DeleteProject-@project.ID" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#deleteProject-@project.ID" aria-hidden="false">
@@ -125,9 +124,9 @@
             }
         </table>
     </div>
-    
 
-  
+
+
 </div>
 
 @section footer{
