@@ -53,9 +53,9 @@
             var pMod1 = document.createElement('p');
             var pMod2 = document.createElement('p');
             var pCreate = document.createElement('p');
-            pMod1.style.fontSize = "12pt";
-            pMod2.style.fontSize = "12pt";
-            pCreate.style.fontSize = "12pt";
+            pMod1.style.fontSize = "11pt";
+            pMod2.style.fontSize = "11pt";
+            pCreate.style.fontSize = "11pt";
             pMod1.innerHTML = modDate;
             pMod1.className = "m-0";
             pMod2.innerHTML = modTime;
